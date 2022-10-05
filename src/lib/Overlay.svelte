@@ -125,6 +125,10 @@
                 <div class="team">
                     {#each current_match.players as player}
                         <div class="player">
+                            {#if (settings?.civ) }
+                                <img src={`https://aoe2techtree.net/img/Civs/${settings.civ[player.civ].toLowerCase()}.png`} class="civ-flag" width="30" height="30" alt={settings.civ[player.civ]}>
+                            {/if}
+
                             {player.name}
                             |
 
@@ -172,7 +176,7 @@
     }
 
     .civ-flag {
-        margin-right: 10px;
+        margin-right: 5px;
     }
 
     .rating {
