@@ -186,11 +186,6 @@
         margin-right: 5px;
     }
 
-    .rank-icon {
-        margin-left: 5px;
-        margin-right: 5px;
-    }
-
     .winrate-icon {
         margin-left: 5px;
         margin-right: 5px;
