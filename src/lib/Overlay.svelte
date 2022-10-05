@@ -18,6 +18,24 @@
 	let current_match = {};
     let current_players = {};
 
+    async function set_static_data() {
+        const response = await fetch("https://app.aoe2companion.com/static/media/en.json.679e7d39.lazy");
+        const {civ, game_type, leaderboard, map_size, map_type, rating_type} = await response.json();
+
+        const prepare_data = (data) => data.reduce((data, item) => {
+            data[item.id] = item.string;
+            return data;
+        }, {});
+
+        // Set static data.
+        settings["civ"] = prepare_data(civ);
+        settings["game_type"] = prepare_data(game_type);
+        settings["leaderboard"] = prepare_data(leaderboard);
+        settings["map_size"] = prepare_data(map_size);
+        settings["map_type"] = prepare_data(map_type);
+        settings["rating_type"] = prepare_data(rating_type);
+    }
+
     async function set_data() {
         await set_current_match();
         settings.leaderboard_id = current_match.leaderboard_id;
@@ -83,6 +101,7 @@
     onMount(async () => {
         if (!settings.steam_id && !settings.profile_id) return;
 
+        set_static_data();
         set_data();
 		start_periodic_check();
 	});
@@ -93,7 +112,12 @@
     {#if (Object.keys(current_match).length > 0) }
 
         <div class="match-info">
-            Map: {current_match.map_type} | Server: {current_match.server}
+            {#if (settings?.map_type) }
+                Map: {settings.map_type[current_match.map_type]}
+                |
+            {/if}
+
+            Server: {current_match.server}
         </div>
 
         {#if current_match.players}
