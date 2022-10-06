@@ -130,6 +130,11 @@
                             {/if}
 
                             {player.name}
+
+                            {#if current_players[player.profile_id]?.country}
+                                <img src={`https://flagicons.lipis.dev/flags/1x1/${current_players[player.profile_id].country.toLowerCase()}.svg`} class="flag" width="20" height="20" alt={current_players[player.profile_id].country}>    
+                            {/if}
+
                             |
 
                             {#if (current_players[player.profile_id]) }
@@ -173,10 +178,16 @@
         display: flex;
         align-items: center;
         white-space: nowrap;
+        margin-bottom: 5px;
     }
 
     .civ-flag {
         margin-right: 5px;
+    }
+
+    .flag {
+        border-radius: 50%;
+        margin: 0 5px;
     }
 
     .rating {
