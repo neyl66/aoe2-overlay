@@ -40,12 +40,19 @@
         await set_current_match();
         settings.leaderboard_id = current_match.leaderboard_id;
         await set_current_players();
-        console.log(current_players);
     }
 
     async function set_current_match() {
         [current_match] = await get_current_match();
-        console.log(current_match);
+
+        // Make watched player always first.
+        current_match.players.sort((a, b) => {
+            if (a.profile_id == settings.profile_id) {
+                return -1;
+            } else {
+                return 1;
+            }
+        });
     }
 
     async function get_current_match() {

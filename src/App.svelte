@@ -6,8 +6,6 @@
     import Overlay from "./lib/Overlay.svelte";
     import Search from "./lib/Search.svelte";
 
-    console.log($router);
-    console.log($router.query);
     $: is_search = !(Object.keys($router.query).length);
 </script>
 
