@@ -127,6 +127,11 @@
             {/if}
 
             Server: {current_match.server}
+
+            |
+            {#if (settings?.leaderboard) }
+                {settings.leaderboard[current_match.leaderboard_id]}
+            {/if}
         </div>
 
         {#if current_match.players}
