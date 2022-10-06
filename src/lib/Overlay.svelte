@@ -67,6 +67,8 @@
         for (const {profile_id} of current_match.players) {
             const {leaderboard: player} = await get_current_player(profile_id);
 
+            if (player.length < 1) continue;
+
             // Calculate winrate.
             const wins = player[0].wins;
 			const losses = player[0].losses;
