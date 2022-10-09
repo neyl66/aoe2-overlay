@@ -176,6 +176,7 @@
     .overlay {
         width: 450px;
         background: linear-gradient(90deg, rgba(51,51,51,1) 0%, rgba(51,51,51,1) 100%);
+        padding: 10px;
     }
 
     .match-info {
@@ -187,11 +188,12 @@
     .players {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
+        column-gap: 10px;
         font-size: 21px;
     }
 
     .player {
-        padding: 0 5px;
+
     }
 
     .civ-flag, .flag {
