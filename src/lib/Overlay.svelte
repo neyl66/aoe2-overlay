@@ -218,6 +218,10 @@
         color: #D2AF26;
     }
 
+    .rank {
+        font-size: 0.85em;
+    }
+
     .winrate {
         display: flex;
         align-items: center;
