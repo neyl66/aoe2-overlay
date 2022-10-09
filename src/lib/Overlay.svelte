@@ -28,7 +28,7 @@
         }, {});
 
         // Set static data.
-        settings["civ"] = prepare_data(civ);
+        settings["civs"] = prepare_data(civ);
         settings["game_type"] = prepare_data(game_type);
         settings["leaderboard"] = prepare_data(leaderboard);
         settings["map_size"] = prepare_data(map_size);
@@ -139,8 +139,8 @@
                 <div class="team">
                     {#each current_match.players as player}
                         <div class="player">
-                            {#if (settings?.civ) }
-                                <img src={`https://aoe2techtree.net/img/Civs/${settings.civ[player.civ].toLowerCase()}.png`} class="civ-flag" width="30" height="30" alt={settings.civ[player.civ]}>
+                            {#if (settings?.civs) }
+                                <img src={`https://aoe2techtree.net/img/Civs/${settings.civs[player.civ].toLowerCase()}.png`} class="civ-flag" width="30" height="30" alt={settings.civs[player.civ]}>
                             {/if}
 
                             {player.name}
