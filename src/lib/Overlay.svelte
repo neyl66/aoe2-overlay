@@ -174,18 +174,20 @@
 
 <style>
     .overlay {
-        width: 500px;
-        font-size: 22px;
+        width: 450px;
         background: linear-gradient(90deg, rgba(51,51,51,1) 0%, rgba(51,51,51,1) 100%);
     }
 
     .match-info {
+        font-size: 19px;
+        text-align: center;
         margin-bottom: 10px;
     }
 
     .players {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
+        font-size: 21px;
     }
 
     .player {
