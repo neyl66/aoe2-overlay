@@ -13,5 +13,8 @@
     "svelte": "^3.49.0",
     "tinro": "^0.6.12",
     "vite": "^3.1.0"
+  },
+  "dependencies": {
+    "@leveluptuts/svelte-fit": "^1.0.3"
   }
 }

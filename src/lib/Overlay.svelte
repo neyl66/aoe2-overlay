@@ -1,5 +1,6 @@
 <script>
     import {onMount} from "svelte";
+    import {fit} from "@leveluptuts/svelte-fit";
     import {meta} from "tinro";
     const route = meta();
 
@@ -145,12 +146,14 @@
                             </div>
                         {/if}
 
-                        <div class="player-name">
+                        <div class="player-name-wrap">
                             {#if (current_players[player.profile_id]?.country) }
-                                <img src={`https://flagicons.lipis.dev/flags/1x1/${current_players[player.profile_id].country.toLowerCase()}.svg`} class="flag" width="22" height="22" alt={current_players[player.profile_id].country}>    
+                                <img src={`https://flagicons.lipis.dev/flags/1x1/${current_players[player.profile_id].country.toLowerCase()}.svg`} class="flag" width="20" height="20" alt={current_players[player.profile_id].country}>    
                             {/if}
 
-                            {player.name}
+                            <div class="player-name-inner">
+                                <span use:fit={{max_size: 26}}>{player.name}</span>
+                            </div>
                         </div>
 
                         {#if (current_players[player.profile_id]) }
@@ -191,7 +194,7 @@
 
     .players {
         display: grid;
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(2, minmax(0, 1fr));
         column-gap: 10px;
         font-size: 20px;
     }
@@ -206,14 +209,19 @@
         font-size: 0.9em;
     }
 
+    .player-name-wrap {
+        display: flex;
+        align-items: center;
+        font-size: 1.2em;
+    }
+
     .civ-flag {
         margin-right: 4px;
     }
 
-    .player-name {
-        display: flex;
-        align-items: center;
-        font-size: 1.2em;
+    .player-name-inner {
+        max-width: calc(100% - 20px - 7px);
+        white-space: nowrap;
     }
 
     .flag {
