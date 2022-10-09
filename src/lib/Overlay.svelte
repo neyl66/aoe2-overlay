@@ -19,7 +19,7 @@
     let current_players = {};
 
     async function set_static_data() {
-        const response = await fetch("https://app.aoe2companion.com/static/media/en.json.679e7d39.lazy");
+        const response = await fetch("https://raw.githubusercontent.com/denniske/aoe2companion/master/app/assets/strings/en.json.lazy");
         const {civ, game_type, leaderboard, map_size, map_type, rating_type} = await response.json();
 
         const prepare_data = (data) => data.reduce((data, item) => {
