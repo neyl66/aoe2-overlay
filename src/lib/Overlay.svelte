@@ -139,16 +139,19 @@
                 {#each current_match.players as player}
                     <div class="player">
                         {#if (settings?.civs) }
-                            <img src={`https://aoe2techtree.net/img/Civs/${settings.civs[player.civ].toLowerCase()}.png`} class="civ-flag" width="33" height="33" alt={settings.civs[player.civ]}>
+                            <div class="player-civ">
+                                <img src={`https://aoe2techtree.net/img/Civs/${settings.civs[player.civ].toLowerCase()}.png`} class="civ-flag" width="33" height="33" alt={settings.civs[player.civ]}>
+                                {settings.civs[player.civ]}
+                            </div>
                         {/if}
 
-                        {#if (current_players[player.profile_id]?.country) }
-                            <img src={`https://flagicons.lipis.dev/flags/1x1/${current_players[player.profile_id].country.toLowerCase()}.svg`} class="flag" width="22" height="22" alt={current_players[player.profile_id].country}>    
-                        {/if}
+                        <div class="player-name">
+                            {#if (current_players[player.profile_id]?.country) }
+                                <img src={`https://flagicons.lipis.dev/flags/1x1/${current_players[player.profile_id].country.toLowerCase()}.svg`} class="flag" width="22" height="22" alt={current_players[player.profile_id].country}>    
+                            {/if}
 
-                        <br>
-                        <span class="player-name">{player.name}</span>
-                        <br>
+                            {player.name}
+                        </div>
 
                         {#if (current_players[player.profile_id]) }
                             <span class="rating">{current_players[player.profile_id].rating} MMR</span>
@@ -197,21 +200,25 @@
 
     }
 
-    .civ-flag, .flag {
-        display: inline-block;
-        vertical-align: middle;
+    .player-civ {
+        display: flex;
+        align-items: center;
+        font-size: 0.9em;
     }
 
     .civ-flag {
-        margin-right: 5px;
+        margin-right: 4px;
+    }
+
+    .player-name {
+        display: flex;
+        align-items: center;
+        font-size: 1.2em;
     }
 
     .flag {
         border-radius: 50%;
-    }
-
-    .player-name {
-        font-size: 1.2em;
+        margin-right: 7px;
     }
 
     .rating {
