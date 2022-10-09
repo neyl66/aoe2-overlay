@@ -122,16 +122,16 @@
 
         <div class="match-info">
             {#if (settings?.map_type) }
-                Map: {settings.map_type[current_match.map_type]}
+                {settings.map_type[current_match.map_type]}
                 |
             {/if}
 
-            Server: {current_match.server}
-
-            |
             {#if (settings?.leaderboard) }
                 {settings.leaderboard[current_match.leaderboard_id]}
             {/if}
+
+            |
+            {current_match.server}
         </div>
 
         {#if (current_match.players) }
@@ -139,11 +139,11 @@
                 {#each current_match.players as player}
                     <div class="player">
                         {#if (settings?.civs) }
-                            <img src={`https://aoe2techtree.net/img/Civs/${settings.civs[player.civ].toLowerCase()}.png`} class="civ-flag" width="30" height="30" alt={settings.civs[player.civ]}>
+                            <img src={`https://aoe2techtree.net/img/Civs/${settings.civs[player.civ].toLowerCase()}.png`} class="civ-flag" width="33" height="33" alt={settings.civs[player.civ]}>
                         {/if}
 
                         {#if (current_players[player.profile_id]?.country) }
-                            <img src={`https://flagicons.lipis.dev/flags/1x1/${current_players[player.profile_id].country.toLowerCase()}.svg`} class="flag" width="20" height="20" alt={current_players[player.profile_id].country}>    
+                            <img src={`https://flagicons.lipis.dev/flags/1x1/${current_players[player.profile_id].country.toLowerCase()}.svg`} class="flag" width="22" height="22" alt={current_players[player.profile_id].country}>    
                         {/if}
 
                         <br>
@@ -176,6 +176,7 @@
     .overlay {
         width: 600px;
         font-size: 22px;
+        background: linear-gradient(90deg, rgba(51,51,51,1) 0%, rgba(51,51,51,1) 100%);
     }
 
     .match-info {
@@ -185,7 +186,6 @@
     .players {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
-        background: linear-gradient(90deg, rgba(51,51,51,1) 0%, rgba(51,51,51,1) 100%);
     }
 
     .player {
