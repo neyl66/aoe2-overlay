@@ -39,12 +39,15 @@
 
     async function set_data() {
         await set_current_match();
+        if (!current_match) return;
+        
         settings.leaderboard_id = current_match.leaderboard_id;
         await set_current_players();
     }
 
     async function set_current_match() {
         [current_match] = await get_current_match();
+        if (!current_match) return;
 
         // Make watched player always first.
         current_match.players.sort((a, b) => {
@@ -57,10 +60,17 @@
     }
 
     async function get_current_match() {
-        const response = await fetch(match_url(settings.profile_id));
-        const json = await response.json();
+        try {
+            const response = await fetch(match_url(settings.profile_id));
+            if (!response.ok) return [];
 
-        return json;
+            const json = await response.json();
+            return json;
+        } catch (error) {
+            console.error(error);
+        }
+
+        return [];
     }
 
     async function set_current_players() {
@@ -68,7 +78,7 @@
         for (const {profile_id} of current_match.players) {
             const {leaderboard: player} = await get_current_player(profile_id);
 
-            if (player.length < 1) continue;
+            if (!Array.isArray(player) || player?.length < 1) continue;
 
             // Calculate winrate.
             const wins = player[0].wins;
@@ -88,10 +98,19 @@
     }
 
     async function get_current_player(profile_id) {
-        const response = await fetch(player_url(profile_id, settings.leaderboard_id));
-        const json = await response.json();
+        if (!settings.leaderboard_id) return {};
 
-        return json;
+        try {
+            const response = await fetch(player_url(profile_id, settings.leaderboard_id));
+            if (!response.ok) return {};
+
+            const json = await response.json();
+            return json;
+        } catch (error) {
+            console.error(error);
+        }
+
+        return {};
     }
 
 	function start_periodic_check() {
@@ -119,7 +138,7 @@
 </script>
 
 <div class="overlay">
-    {#if (Object.keys(current_match).length > 0) }
+    {#if (current_match && Object.keys(current_match).length > 0) }
 
         <div class="match-info">
             {#if (settings?.map_type) }
