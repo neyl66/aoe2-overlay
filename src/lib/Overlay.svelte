@@ -171,7 +171,7 @@
                             {/if}
 
                             <div class="player-name-inner">
-                                <span use:fit={{max_size: 26}}>{player.name}</span>
+                                <span use:fit={{min_size: 14, max_size: 26}}>{player.name}</span>
                             </div>
                         </div>
 
@@ -241,6 +241,8 @@
     .player-name-inner {
         max-width: calc(100% - 20px - 7px);
         white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     .flag {
