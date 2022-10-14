@@ -150,8 +150,10 @@
                 {settings.leaderboard[current_match.leaderboard_id]}
             {/if}
 
-            |
-            {current_match.server}
+            {#if (current_match?.server) }
+                |
+                {current_match.server}   
+            {/if}
         </div>
 
         {#if (current_match.players) }
