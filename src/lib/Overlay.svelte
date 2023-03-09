@@ -1,6 +1,7 @@
 <script>
     import {onMount} from "svelte";
     import {fit} from "@leveluptuts/svelte-fit";
+    import Sockette from "sockette";
     import {meta} from "tinro";
     const route = meta();
 
@@ -10,6 +11,7 @@
 	let settings = {
 		steam_id: route.query?.steam_id,
         profile_id: route.query?.profile_id,
+        login: route.query?.k,
         periodic_check: {
             timer: 0,
             interval: 30 * 1000,
@@ -40,9 +42,29 @@
     async function set_data() {
         await set_current_match();
         if (!current_match) return;
-        
+
         settings.leaderboard_id = current_match.leaderboard_id;
         await set_current_players();
+    }
+
+    async function set_websocket_data() {
+        if (!settings.login) return console.error("No login!");
+
+        const socket = new Sockette("wss://aoe2recs.com/dashboard/overlay-api/", {
+            timeout: 5e3,
+            maxAttempts: 10,
+            onopen: (e) => {
+                console.log("Connected!", e)
+                socket.json({
+                    login: settings.login,
+                });
+            },
+            onmessage: e => console.log("Received:", e),
+            onreconnect: e => console.log("Reconnecting...", e),
+            onmaximum: e => console.log("Stop Attempting!", e),
+            onclose: e => console.log("Closed!", e),
+            onerror: e => console.log("Error:", e),
+        });
     }
 
     async function set_current_match() {
@@ -130,9 +152,13 @@
     onMount(async () => {
         if (!settings.steam_id && !settings.profile_id) return;
 
-        set_static_data();
-        set_data();
-		start_periodic_check();
+        if (settings?.login) {
+            set_websocket_data();
+        } else {
+            set_static_data();
+            set_data();
+		    start_periodic_check();
+        }
 	});
 
 </script>
