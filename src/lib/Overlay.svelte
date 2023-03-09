@@ -59,7 +59,15 @@
                     login: settings.login,
                 });
             },
-            onmessage: e => console.log("Received:", e),
+            onmessage: (e) => {
+                console.log("Received:", e);
+
+                try {
+                    console.log(JSON.parse(e.data));
+                } catch (error) {
+                    console.error("JSON ERROR", error);
+                }
+            },
             onreconnect: e => console.log("Reconnecting...", e),
             onmaximum: e => console.log("Stop Attempting!", e),
             onclose: e => console.log("Closed!", e),
