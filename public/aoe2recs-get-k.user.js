@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Aoe2recs get k
 // @namespace    http://tampermonkey.net/
-// @version      1.0
+// @version      1.1.0
 // @description  Show k code.
 // @author       Neyl
 // @match        https://aoe2recs.com/dashboard/overlay/
@@ -12,5 +12,5 @@
 (function() {
     'use strict';
 
-    alert(localStorage?.k ? encodeUriComponent(localStorage.k) : "");
+    alert(localStorage?.k ? encodeURIComponent(localStorage.k) : "");
 })();
