@@ -11,7 +11,7 @@
 	let settings = {
 		steam_id: route.query?.steam_id,
         profile_id: route.query?.profile_id,
-        login: route.query?.k,
+        login: route.query?.k ? decodeURIComponent(route.query?.k) : undefined,
         periodic_check: {
             timer: 0,
             interval: 30 * 1000,
@@ -48,7 +48,7 @@
     }
 
     async function set_websocket_data() {
-        if (!settings.login) return console.error("No login!");
+        if (!settings?.login) return console.error("No login!");
 
         const socket = new Sockette("wss://aoe2recs.com/dashboard/overlay-api/", {
             timeout: 5e3,
