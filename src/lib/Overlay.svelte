@@ -20,6 +20,7 @@
             ukwest: "UK West",
             westeurope: "EU West",
             eastus: "US East",
+            westus2: "US West 2",
             southeastasia: "Asia SE",
             westindia: "India West",
         },
