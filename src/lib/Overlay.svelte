@@ -263,7 +263,10 @@
                         {#if (current_players[player.profile_id]) }
                             <span class="rating">{current_players[player.profile_id].rating} MMR</span>
 
-                            <span class="rank">(#{current_players[player.profile_id].rank})</span>
+                            {#if (current_players[player.profile_id]?.rank)}
+                                <span class="rank">(#{current_players[player.profile_id].rank})</span>
+                            {/if}
+
                             <br>
 
                             {#if (current_players[player.profile_id]?.wins)}
