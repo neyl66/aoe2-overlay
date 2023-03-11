@@ -80,7 +80,7 @@
 
                     if (!match) {
 
-                        // Show our player.
+                        // Show watched player.
                         if (player) {
                             current_players = players[player.id] = {
                                 rating: settings.show_1v1_rating && player?.mmr_rm_1v1 ? player?.mmr_rm_1v1 : player?.mmr_rm_tg,
@@ -108,7 +108,7 @@
                     const players = {};
                     const current_match_players = [];
 
-                    // Make our player team always first.
+                    // Make watched player team always first.
                     match.teams.sort((a, b) => {
                         if (a.includes(player.id)) {
                             return -1;
@@ -135,7 +135,7 @@
                         }
                     }
 
-                    // Make our player always first.
+                    // Make watched player always first.
                     current_match_players.sort((a, b) => {
                         if (a.profile_id === player.id) {
                             return -1;
@@ -168,6 +168,20 @@
             } else {
                 return 1;
             }
+        });
+
+        const watched_player_team = current_match.players.find((player) => player.profile_id == settings.profile_id)?.team;
+        if (!watched_player_team) return console.error("Did not find watched player team!");
+
+        // Make watched player team always first.
+        for (const player of current_match.players) {
+            if (player.team === watched_player_team) {
+                player.team = 0;
+            }
+        }
+
+        current_match.players.sort((a, b) => {
+            return a.team - b.team;
         });
     }
 
