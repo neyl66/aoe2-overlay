@@ -76,8 +76,32 @@
 
                     const {player, match} = JSON.parse(event.data)?.data ?? JSON.parse(event.data) ?? "";
 
-                    if (!player || !match) return console.log("No player or match!");
-                    if (!match?.teams) return console.log("No teams!");
+                    if (!player) return console.error("No player!");
+
+                    if (!match) {
+
+                        // Show our player.
+                        if (player) {
+                            current_players = players[player.id] = {
+                                rating: settings.show_1v1_rating && player?.mmr_rm_1v1 ? player?.mmr_rm_1v1 : player?.mmr_rm_tg,
+                                rank: player?.rank_rm_1v1,
+                                profile_id: player.id,
+                                country: player?.country_code,
+                            }
+
+                            player.profile_id = player.id;
+                            player.civ = player?.civilization;
+                            current_match = {
+                                players: [
+                                    player,
+                                ]
+                            };
+                        }
+
+                        return console.error("No match!");
+                    }
+
+                    if (!match?.teams) return console.error("No teams!");
 
                     current_match = match;
 
@@ -98,14 +122,14 @@
                             const found_player = match.players.find((p) => p.id === player_id);
 
                             players[found_player.id] = {
-                                rating: settings.show_1v1_rating && found_player.mmr_rm_1v1 ? found_player.mmr_rm_1v1 : found_player.mmr_rm_tg,
-                                rank: found_player.rank_rm_1v1,
+                                rating: settings.show_1v1_rating && found_player?.mmr_rm_1v1 ? found_player?.mmr_rm_1v1 : found_player?.mmr_rm_tg,
+                                rank: found_player?.rank_rm_1v1,
                                 profile_id: found_player.id,
-                                country: found_player.country_code,
+                                country: found_player?.country_code,
                             };
 
                             found_player.profile_id = found_player.id;
-                            found_player.civ = found_player.civilization;
+                            found_player.civ = found_player?.civilization;
                             found_player.team = team;
                             current_match_players.push(found_player);
                         }
@@ -116,7 +140,7 @@
                         if (a.profile_id === player.id) {
                             return -1;
                         }
-                        return 1
+                        return 1;
                     });
 
                     current_players = players;
