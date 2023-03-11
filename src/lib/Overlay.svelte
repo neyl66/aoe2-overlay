@@ -79,18 +79,18 @@
 
                     if (!teams) console.log("No teams!");
 
-                    // Make our player always first.
-                    match.players.sort((a, b) => {
-                        if (a.id === player.id) {
-                            return 1;
-                        }
-                        return -1
-                    });
-
                     current_match = match;
 
                     const players = {};
                     const current_match_players = [];
+
+                    // Make our player team always first.
+                    match.teams.sort((a, b) => {
+                        if (a.includes(player.id)) {
+                            return -1;
+                        }
+                        return 1;
+                    });
 
                     // Prepare current players.
                     for (const team of match.teams) {
@@ -109,6 +109,14 @@
                             current_match_players.push(found_player);
                         }
                     }
+
+                    // Make our player always first.
+                    current_match_players.sort((a, b) => {
+                        if (a.profile_id === player.id) {
+                            return -1;
+                        }
+                        return 1
+                    });
 
                     current_players = players;
                     current_match.players = current_match_players;
