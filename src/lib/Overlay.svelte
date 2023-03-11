@@ -78,19 +78,24 @@
 
                     if (!player) return console.error("No player!");
 
+                    // Store watched player.
+                    player.profile_id = player?.id;
+                    player.civ = player?.civilization;
+                    settings.player = player;
+
                     if (!match) {
 
                         // Show watched player.
                         if (player) {
-                            current_players = players[player.id] = {
-                                rating: settings.show_1v1_rating && player?.mmr_rm_1v1 ? player?.mmr_rm_1v1 : player?.mmr_rm_tg,
-                                rank: player?.rank_rm_1v1,
-                                profile_id: player.id,
-                                country: player?.country_code,
-                            }
+                            current_players = {
+                                [player.id] : {
+                                    rating: settings.show_1v1_rating && player?.mmr_rm_1v1 ? player?.mmr_rm_1v1 : player?.mmr_rm_tg,
+                                    rank: player?.rank_rm_1v1,
+                                    profile_id: player?.id,
+                                    country: player?.country_code,
+                                }
+                            };
 
-                            player.profile_id = player.id;
-                            player.civ = player?.civilization;
                             current_match = {
                                 players: [
                                     player,
