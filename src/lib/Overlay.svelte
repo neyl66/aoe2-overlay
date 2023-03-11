@@ -248,10 +248,10 @@
             <div class="players">
                 {#each current_match.players as player}
                     <div class="player">
-                        {#if (settings?.civs || current_match?.civilization)}
+                        {#if (settings?.civs || player?.civilization)}
                             <div class="player-civ">
-                                <img src={`https://aoe2companion.com/civilizations/${settings?.civs ? settings.civs[player.civ].toLowerCase() : current_match.civilization.toLowerCase()}.png`} class="civ-flag" width="33" height="33" alt={settings?.civs ? settings.civs[player.civ] : current_match.civilization}>
-                                {settings ?.civs ? settings.civs[player.civ] : current_match.civilization}
+                                <img src={`https://aoe2companion.com/civilizations/${settings?.civs ? settings.civs[player.civ].toLowerCase() : player.civilization.toLowerCase()}.png`} class="civ-flag" width="33" height="33" alt={settings?.civs ? settings.civs[player.civ] : player.civilization}>
+                                {settings ?.civs ? settings.civs[player.civ] : player.civilization}
                             </div>
                         {/if}
 
