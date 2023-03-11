@@ -18,6 +18,7 @@
         },
         servers: {
             ukwest: "UK West",
+            westeurope: "EU West",
             eastus: "US East",
             southeastasia: "SE Asia",
         },
@@ -98,7 +99,7 @@
                             const found_player = match.players.find((p) => p.id === player_id);
 
                             players[found_player.id] = {
-                                rating: found_player.user_mmr,
+                                rating: match.players.length > 2 ? found_player.mmr_rm_tg : found_player.mmr_rm_1v1,
                                 rank: found_player.rank_rm_1v1,
                                 profile_id: found_player.id,
                                 country: found_player.country_code,
