@@ -16,6 +16,11 @@
             timer: 0,
             interval: 30 * 1000,
         },
+        servers: {
+            ukwest: "UK West",
+            eastus: "US East",
+            southeastasia: "SE Asia",
+        },
 	};
 
 	let current_match = {};
@@ -61,12 +66,12 @@
                     login: settings.login,
                 });
             },
-            onmessage: (e) => {
+            onmessage: (event) => {
 
                 try {
-                    console.log("data:", JSON.parse(e.data));
+                    console.log("data:", JSON.parse(event.data));
 
-                    const {player, match} = JSON.parse(e.data)?.data ?? "";
+                    const {player, match} = JSON.parse(event.data)?.data ?? JSON.parse(event.data) ?? "";
 
                     if (!player || !match) return console.log("No player or match!");
 
@@ -216,34 +221,34 @@
 </script>
 
 <div class="overlay">
-    {#if (current_match && Object.keys(current_match).length > 0) }
+    {#if (current_match && Object.keys(current_match).length > 0)}
 
         <div class="match-info">
-            {#if (settings?.map_type) }
+            {#if (settings?.map_type)}
                 {settings.map_type[current_match.map_type]}
                 |
-            {:else if (settings?.map)}
-                {settings.map}
+            {:else if (current_match?.map)}
+                {current_match.map}
                 |
             {/if}
 
-            {#if (settings?.leaderboard) }
+            {#if (settings?.leaderboard)}
                 {settings.leaderboard[current_match.leaderboard_id]}
-            {:else if (settings?.game_type)}
-                {settings.game_type}
+            {:else if (current_match?.game_type)}
+                {current_match.game_type}
             {/if}
 
-            {#if (current_match?.server) }
+            {#if (current_match?.server)}
                 |
-                {current_match.server}   
+                {settings.servers[current_match.server.toLowerCase()] ?? current_match.server}
             {/if}
         </div>
 
-        {#if (current_match.players) }
+        {#if (current_match.players)}
             <div class="players">
                 {#each current_match.players as player}
                     <div class="player">
-                        {#if (settings?.civs || current_match?.civilization) }
+                        {#if (settings?.civs || current_match?.civilization)}
                             <div class="player-civ">
                                 <img src={`https://aoe2companion.com/civilizations/${settings?.civs ? settings.civs[player.civ].toLowerCase() : current_match.civilization.toLowerCase()}.png`} class="civ-flag" width="33" height="33" alt={settings?.civs ? settings.civs[player.civ] : current_match.civilization}>
                                 {settings ?.civs ? settings.civs[player.civ] : current_match.civilization}
@@ -251,7 +256,7 @@
                         {/if}
 
                         <div class="player-name-wrap">
-                            {#if (current_players[player.profile_id]?.country) }
+                            {#if (current_players[player.profile_id]?.country)}
                                 <img src={`https://flagicons.lipis.dev/flags/1x1/${current_players[player.profile_id].country.toLowerCase()}.svg`} class="flag" width="20" height="20" alt={current_players[player.profile_id].country}>
                             {/if}
 
@@ -260,7 +265,7 @@
                             </div>
                         </div>
 
-                        {#if (current_players[player.profile_id]) }
+                        {#if (current_players[player.profile_id])}
                             {#if (current_players[player.profile_id]?.rating)}
                                 <span class="rating">{current_players[player.profile_id].rating} MMR</span>
                             {/if}
