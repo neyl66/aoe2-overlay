@@ -261,7 +261,9 @@
                         </div>
 
                         {#if (current_players[player.profile_id]) }
-                            <span class="rating">{current_players[player.profile_id].rating} MMR</span>
+                            {#if (current_players[player.profile_id]?.rating)}
+                                <span class="rating">{current_players[player.profile_id].rating} MMR</span>
+                            {/if}
 
                             {#if (current_players[player.profile_id]?.rank)}
                                 <span class="rank">(#{current_players[player.profile_id].rank})</span>
