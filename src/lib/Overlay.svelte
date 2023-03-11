@@ -48,8 +48,8 @@
     }
 
     async function set_websocket_data() {
-        if (!settings?.login) {
-            login = null;
+        if (settings?.login === "null") {
+            settings.login = null;
         }
 
         const socket = new Sockette("wss://aoe2recs.com/dashboard/overlay-api/", {
@@ -66,7 +66,7 @@
                 try {
                     console.log("data:", JSON.parse(e.data));
 
-                    const {player, match} = JSON.parse(e.data)?.data;
+                    const {player, match} = JSON.parse(e.data)?.data ?? "";
 
                     if (!player || !match) return console.log("No player or match!");
 
