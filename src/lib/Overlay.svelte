@@ -89,15 +89,16 @@
 
                     // Prepare current players.
                     for (const team of match.teams) {
-                        for (const player of team) {
-                            players[player.id] = {
-                                rating: player.user_mmr,
-                                rank: player.rank_rm_1v1,
-                                profile_id: player.id,
-                                country: player.country_code,
+                        for (const player_id of team) {
+                            const found_player = match.players.find((p) => p.id === player_id);
+
+                            players[found_player.id] = {
+                                rating: found_player.user_mmr,
+                                rank: found_player.rank_rm_1v1,
+                                profile_id: found_player.id,
+                                country: found_player.country_code,
                             };
 
-                            const found_player = match.playyers.find((p) => p.id === player.id);
                             found_player.profile_id = found_player.id;
                             found_player.civ = found_player.civilization;
                             current_match_players.push(found_player);
