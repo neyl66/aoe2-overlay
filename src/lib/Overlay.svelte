@@ -7,7 +7,7 @@
 
     const player_url = (profile_id, leaderboard_id) => `https://legacy.aoe2companion.com/api/leaderboard?game=aoe2de&leaderboard_id=${leaderboard_id}&count=1&profile_id=${profile_id}`;
     const match_url = (profile_id) => `https://legacy.aoe2companion.com/api/player/matches?game=aoe2de&start=0&count=1&profile_ids=${profile_id}`;
-    
+
 	let settings = {
 		steam_id: route.query?.steam_id,
         profile_id: route.query?.profile_id,
@@ -106,6 +106,7 @@
 
                             found_player.profile_id = found_player.id;
                             found_player.civ = found_player.civilization;
+                            found_player.team = team;
                             current_match_players.push(found_player);
                         }
                     }
@@ -253,23 +254,29 @@
         </div>
 
         {#if (current_match.players)}
-            <div class="players">
-                {#each current_match.players as player}
-                    <div class="player">
-                        {#if (settings?.civs || player?.civilization)}
-                            <div class="player-civ">
-                                <img src={`https://aoe2companion.com/civilizations/${settings?.civs ? settings.civs[player.civ].toLowerCase() : player.civilization.toLowerCase()}.png`} class="civ-flag" width="33" height="33" alt={settings?.civs ? settings.civs[player.civ] : player.civilization}>
-                                {settings ?.civs ? settings.civs[player.civ] : player.civilization}
-                            </div>
-                        {/if}
+            {@const is_team_game = current_match.players.length > 2}
 
-                        <div class="player-name-wrap">
-                            {#if (current_players[player.profile_id]?.country)}
-                                <img src={`https://flagicons.lipis.dev/flags/1x1/${current_players[player.profile_id].country.toLowerCase()}.svg`} class="flag" width="20" height="20" alt={current_players[player.profile_id].country}>
+            <div class={`players ${is_team_game ? "-team" : ""}`}>
+                {#each current_match.players as player, index (player.profile_id)}
+                    {@const is_another_team = (is_team_game && index > 0 && index < current_match.players.length - 1 && player.team !== current_match.players[index + 1].team)}
+
+                    <div class={`player ${is_another_team ? "-border" : ""}`}>
+                        <div class="player-civ-name-container">
+                            {#if (settings?.civs || player?.civilization)}
+                                <div class="player-civ">
+                                    <img src={`https://aoe2companion.com/civilizations/${settings?.civs ? settings.civs[player.civ].toLowerCase() : player.civilization.toLowerCase()}.png`} class="civ-flag" width="33" height="33" alt={settings?.civs ? settings.civs[player.civ] : player.civilization}>
+                                    {settings ?.civs ? settings.civs[player.civ] : player.civilization}
+                                </div>
                             {/if}
 
-                            <div class="player-name-inner">
-                                <span use:fit={{min_size: 14, max_size: 26}}>{player.name}</span>
+                            <div class="player-name-wrap">
+                                {#if (current_players[player.profile_id]?.country)}
+                                    <img src={`https://flagicons.lipis.dev/flags/1x1/${current_players[player.profile_id].country.toLowerCase()}.svg`} class="flag" width="20" height="20" alt={current_players[player.profile_id].country}>
+                                {/if}
+
+                                <div class="player-name-inner">
+                                    <span use:fit={{min_size: 14, max_size: 26}}>{player.name}</span>
+                                </div>
                             </div>
                         </div>
 
@@ -282,7 +289,9 @@
                                 <span class="rank">(#{current_players[player.profile_id].rank})</span>
                             {/if}
 
-                            <br>
+                            {#if (!is_team_game)}
+                                <br>
+                            {/if}
 
                             {#if (current_players[player.profile_id]?.wins)}
                                 <span class="win">{current_players[player.profile_id].wins}W</span>
@@ -293,7 +302,6 @@
                             {/if}
 
                             {#if (current_players[player.profile_id]?.winrate)}
-                                <br>
                                 <div class="winrate">
                                     <span>{current_players[player.profile_id].winrate}%</span>
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" class="winrate-icon"><path fill="#fff" d="M5 0c0 9.803 5.105 12.053 5.604 16h2.805c.497-3.947 5.591-6.197 5.591-16h-14zm7.006 14.62c-.408-.998-.969-1.959-1.548-2.953-1.422-2.438-3.011-5.162-3.379-9.667h9.842c-.368 4.506-1.953 7.23-3.372 9.669-.577.993-1.136 1.954-1.543 2.951zm-.006-3.073c-1.125-2.563-1.849-5.599-1.857-8.547h-1.383c.374 3.118 1.857 7.023 3.24 8.547zm12-9.547c-.372 4.105-2.808 8.091-6.873 9.438.297-.552.596-1.145.882-1.783 2.915-1.521 4.037-4.25 4.464-6.251h-2.688c.059-.45.103-.922.139-1.405h4.076zm-24 0c.372 4.105 2.808 8.091 6.873 9.438-.297-.552-.596-1.145-.882-1.783-2.915-1.521-4.037-4.25-4.464-6.251h2.688c-.058-.449-.102-.922-.138-1.404h-4.077zm13.438 15h-2.866c-.202 1.187-1.63 2.619-3.571 2.619v4.381h10v-4.381c-1.999 0-3.371-1.432-3.563-2.619zm2.562 6h-8v-2h8v2z"></path></svg>
@@ -325,20 +333,35 @@
     }
 
     .players {
+        --columns: 2;
+
         display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: repeat(var(--columns), minmax(0, 1fr));
         column-gap: 10px;
         font-size: 20px;
     }
-
-    .player {
-
+    .players.-team {
+        --columns: 1;
     }
 
+    .player.-border {
+        padding-top: 4px;
+        border-top: 1px solid #fff;
+        margin-top: 8px;
+    }
+
+    .players.-team .player-civ-name-container {
+        display: grid;
+        grid-template-columns: minmax(0, 60%) minmax(0, 40%);
+        column-gap: 10px;
+    }
     .player-civ {
         display: flex;
         align-items: center;
         font-size: 0.9em;
+    }
+    .players.-team .player-civ {
+        order: 2;
     }
 
     .player-name-wrap {
@@ -375,6 +398,9 @@
         display: flex;
         align-items: center;
         font-size: 0.88em;
+    }
+    .players.-team .winrate {
+        display: inline-flex;
     }
 
     .winrate-icon {
