@@ -77,10 +77,7 @@
                     const {player, match} = JSON.parse(event.data)?.data ?? JSON.parse(event.data) ?? "";
 
                     if (!player || !match) return console.log("No player or match!");
-
-                    const {teams} = match;
-
-                    if (!teams) console.log("No teams!");
+                    if (!match?.teams) return console.log("No teams!");
 
                     current_match = match;
 
