@@ -369,9 +369,9 @@
     }
 
     .player.-border {
-        padding-top: 4px;
-        border-top: 1px solid #fff;
-        margin-top: 8px;
+        padding-bottom: 4px;
+        border-bottom: 1px solid #fff;
+        margin-bottom: 8px;
     }
 
     .players.-team .player-civ-name-container {
