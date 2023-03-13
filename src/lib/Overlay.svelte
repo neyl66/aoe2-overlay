@@ -87,14 +87,14 @@
                     if (!match) {
 
                         // Show watched player.
-                        if (player) {
+                        if (player && !Object.keys(current_match).length < 1) {
                             current_players = {
                                 [player.id] : {
                                     rating: settings.show_1v1_rating && player?.mmr_rm_1v1 ? player?.mmr_rm_1v1 : player?.mmr_rm_tg,
                                     rank: player?.rank_rm_1v1,
                                     profile_id: player?.id,
                                     country: player?.country_code,
-                                }
+                                },
                             };
 
                             current_match = {
