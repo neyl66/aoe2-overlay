@@ -87,7 +87,7 @@
                     if (!match) {
 
                         // Show watched player.
-                        if (player && !Object.keys(current_match).length < 1) {
+                        if (player && Object.keys(current_match).length < 1) {
                             current_players = {
                                 [player.id] : {
                                     rating: settings.show_1v1_rating && player?.mmr_rm_1v1 ? player?.mmr_rm_1v1 : player?.mmr_rm_tg,
