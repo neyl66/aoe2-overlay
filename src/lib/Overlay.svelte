@@ -29,7 +29,7 @@
 
 	let current_match = {};
     let current_players = {};
-    let show_error = true;
+    let show_error = false;
 
     async function set_static_data() {
         const response = await fetch("https://raw.githubusercontent.com/denniske/aoe2companion/master/app/assets/strings/en.json.lazy");
