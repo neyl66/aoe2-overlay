@@ -29,6 +29,7 @@
 
 	let current_match = {};
     let current_players = {};
+    let show_error = true;
 
     async function set_static_data() {
         const response = await fetch("https://raw.githubusercontent.com/denniske/aoe2companion/master/app/assets/strings/en.json.lazy");
@@ -65,12 +66,14 @@
             timeout: 10_000,
             maxAttempts: Infinity,
             onopen: (e) => {
-                console.log("Connected!", e)
+                console.log("Connected!", e);
+                show_error = false;
                 socket.json({
                     login: settings.login,
                 });
             },
             onmessage: (event) => {
+                show_error = false;
 
                 try {
                     console.log("data:", JSON.parse(event.data));
@@ -156,10 +159,19 @@
                     console.error("JSON ERROR", error);
                 }
             },
-            onreconnect: e => console.log("Reconnecting...", e),
-            onmaximum: e => console.log("Stop Attempting!", e),
-            onclose: e => console.log("Closed!", e),
-            onerror: e => console.log("Error:", e),
+            onreconnect: (event) => {
+                show_error = false;
+                console.log("Reconnecting...", event);
+            },
+            onmaximum: (event) => console.log("Stop Attempting!", event),
+            onclose: (event) => {
+                show_error = true;
+                console.log("Closed!", event);
+            },
+            onerror: (event) => {
+                show_error = true;
+                console.log("Error:", event);
+            },
         });
     }
 
@@ -274,6 +286,11 @@
 </script>
 
 <div class="overlay">
+    <!-- Error icon. -->
+    {#if (show_error)}
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="red" class="error-icon"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0zm-9 3.75h.008v.008H12v-.008z"/></svg>
+    {/if}
+
     {#if (current_match && Object.keys(current_match).length > 0)}
 
         <div class="match-info">
@@ -362,12 +379,21 @@
 
 <style>
     .overlay {
+        position: relative;
         width: 420px;
         background: linear-gradient(90deg, rgba(51,51,51,1) 0%, rgba(51,51,51,1) 100%);
         padding: 10px;
     }
     .overlay:empty {
         padding: 0;
+    }
+
+    .error-icon {
+        width: 30px;
+        height: auto;
+        position: absolute;
+        top: 8px;
+        left: 8px;
     }
 
     .match-info {
