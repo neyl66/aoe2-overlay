@@ -62,8 +62,8 @@
         }
 
         const socket = new Sockette("wss://aoe2recs.com/dashboard/overlay-api/", {
-            timeout: 5e3,
-            maxAttempts: 10,
+            timeout: 10_000,
+            maxAttempts: Infinity,
             onopen: (e) => {
                 console.log("Connected!", e)
                 socket.json({
