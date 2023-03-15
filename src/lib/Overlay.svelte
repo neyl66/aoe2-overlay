@@ -97,6 +97,7 @@
                                     rank: player?.rank_rm_1v1,
                                     profile_id: player?.id,
                                     country: player?.country_code,
+                                    is_tg_mmr_fallback: settings.show_1v1_rating && !player?.mmr_rm_1v1,
                                 },
                             };
 
@@ -135,6 +136,7 @@
                                 rank: found_player?.rank_rm_1v1,
                                 profile_id: found_player.id,
                                 country: found_player?.country_code,
+                                is_tg_mmr_fallback: settings.show_1v1_rating && !found_player?.mmr_rm_1v1,
                             };
 
                             found_player.profile_id = found_player.id;
@@ -343,7 +345,16 @@
 
                         {#if (current_players[player.profile_id])}
                             {#if (current_players[player.profile_id]?.rating)}
-                                <span class="rating">{current_players[player.profile_id].rating} MMR</span>
+                                <span class="rating">
+                                    {current_players[player.profile_id].rating}
+
+                                    <!-- Indicate TG MMR fallback -->
+                                    {#if (current_players[player.profile_id]?.is_tg_mmr_fallback)}
+                                        TG
+                                    {/if}
+
+                                    MMR
+                                </span>
                             {/if}
 
                             {#if (current_players[player.profile_id]?.rank)}
