@@ -296,6 +296,8 @@
     {#if (current_match && Object.keys(current_match).length > 0)}
 
         <div class="match-info">
+
+            <!-- Map type. -->
             {#if (settings?.map_type)}
                 {settings.map_type[current_match.map_type]}
                 |
@@ -304,12 +306,14 @@
                 |
             {/if}
 
+            <!-- Game type. -->
             {#if (settings?.leaderboard)}
                 {settings.leaderboard[current_match.leaderboard_id]}
             {:else if (current_match?.game_type)}
                 {current_match.game_type}
             {/if}
 
+            <!-- Server name. -->
             {#if (current_match?.server)}
                 |
                 {settings.servers[current_match.server.toLowerCase()] ?? current_match.server}
@@ -335,6 +339,7 @@
                                 </div>
                             {/if}
 
+                            <!-- Player name. -->
                             <div class="player-name-wrap">
                                 {#if (current_players[player.profile_id]?.country)}
                                     <img src={`https://flagicons.lipis.dev/flags/1x1/${current_players[player.profile_id].country.toLowerCase()}.svg`} class="flag" width="20" height="20" alt={current_players[player.profile_id].country}>
@@ -347,6 +352,7 @@
                         </div>
 
                         {#if (current_players[player.profile_id])}
+                            <!-- Player rating. -->
                             {#if (current_players[player.profile_id]?.rating)}
                                 <span class="rating">
                                     {current_players[player.profile_id].rating}
@@ -360,6 +366,7 @@
                                 </span>
                             {/if}
 
+                            <!-- Player rank. -->
                             {#if (current_players[player.profile_id]?.rank)}
                                 <span class="rank">(#{current_players[player.profile_id].rank})</span>
                             {/if}
@@ -368,14 +375,17 @@
                                 <br>
                             {/if}
 
+                            <!-- Player wins. -->
                             {#if (current_players[player.profile_id]?.wins)}
                                 <span class="win">{current_players[player.profile_id].wins}W</span>
                             {/if}
 
+                            <!-- Player losses. -->
                             {#if (current_players[player.profile_id]?.losses)}
                                 <span class="loss">{current_players[player.profile_id].losses}L</span>
                             {/if}
 
+                            <!-- Player winrate. -->
                             {#if (current_players[player.profile_id]?.winrate)}
                                 <div class="winrate">
                                     <span>{current_players[player.profile_id].winrate}%</span>
