@@ -23,6 +23,7 @@
             westus2: "US West 2",
             southeastasia: "Asia SE",
             westindia: "India West",
+            koreacentral: "Korea Central"
         },
         show_1v1_rating: true,
 	};
