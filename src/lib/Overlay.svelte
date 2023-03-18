@@ -366,7 +366,7 @@
 
                                     <!-- Indicate TG MMR fallback -->
                                     {#if (current_players[player.profile_id]?.is_tg_mmr_fallback)}
-                                        TG
+                                        <span class="team-game-rating">TG</span>
                                     {/if}
 
                                     MMR
@@ -489,6 +489,9 @@
 
     .rating {
         color: #D2AF26;
+    }
+    .team-game-rating {
+        color: #00dcf3;
     }
 
     .rank {
