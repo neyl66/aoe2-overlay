@@ -325,9 +325,12 @@
 
                     <div class={`player ${is_another_team ? "-border" : ""}`}>
                         <div class="player-civ-name-container">
+                            <!-- Civ image. -->
                             {#if (settings?.civs || player?.civilization)}
+                                {@const civ_image_url = `https://aoe2techtree.net/img/Civs/${settings?.civs ? settings.civs[player.civ].toLowerCase() : player.civilization.toLowerCase()}.png`}
+
                                 <div class="player-civ">
-                                    <img src={`https://aoe2companion.com/civilizations/${settings?.civs ? settings.civs[player.civ].toLowerCase() : player.civilization.toLowerCase()}.png`} class="civ-flag" width="33" height="33" alt="">
+                                    <img src={civ_image_url} class="civ-flag" width="33" height="33" alt="">
                                     {settings ?.civs ? settings.civs[player.civ] : player.civilization}
                                 </div>
                             {/if}
