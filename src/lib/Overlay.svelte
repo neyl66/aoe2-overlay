@@ -157,6 +157,12 @@
                     current_players = players;
                     current_match.players = current_match_players;
 
+                    // Player leaderboard stats.
+                    if (settings.show_1v1_rating) {
+                        settings.leaderboard_id = 3;
+                        set_current_players();
+                    }
+
                 } catch (error) {
                     console.error("JSON ERROR", error);
                 }
