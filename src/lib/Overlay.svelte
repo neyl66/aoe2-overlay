@@ -327,7 +327,7 @@
                         <div class="player-civ-name-container">
                             {#if (settings?.civs || player?.civilization)}
                                 <div class="player-civ">
-                                    <img src={`https://aoe2companion.com/civilizations/${settings?.civs ? settings.civs[player.civ].toLowerCase() : player.civilization.toLowerCase()}.png`} class="civ-flag" width="33" height="33" alt={settings?.civs ? settings.civs[player.civ] : player.civilization}>
+                                    <img src={`https://aoe2companion.com/civilizations/${settings?.civs ? settings.civs[player.civ].toLowerCase() : player.civilization.toLowerCase()}.png`} class="civ-flag" width="33" height="33" alt="">
                                     {settings ?.civs ? settings.civs[player.civ] : player.civilization}
                                 </div>
                             {/if}
