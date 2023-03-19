@@ -436,7 +436,7 @@
                                         <span class="team-game-rating">TG</span>
                                     {/if}
 
-                                    MMR
+                                    <span class="rating-mmr">MMR</span>
                                 </span>
                             {/if}
 
