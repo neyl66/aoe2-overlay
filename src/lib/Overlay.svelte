@@ -64,6 +64,8 @@
             settings.login = null;
         }
 
+        const player_stats_cache = {};
+
         const socket = new Sockette("wss://aoe2recs.com/dashboard/overlay-api/", {
             timeout: 10_000,
             maxAttempts: Infinity,
@@ -73,8 +75,13 @@
                 socket.json({
                     login: settings.login,
                 });
+
+                // Set expected leaderboard ID.
+                if (settings.show_1v1_rating) {
+                    settings.leaderboard_id = 3;
+                }
             },
-            onmessage: (event) => {
+            onmessage: async (event) => {
                 show_error = false;
 
                 try {
@@ -115,8 +122,6 @@
 
                     if (!match?.teams) return console.error("No teams!");
 
-                    current_match = match;
-
                     const players = {};
                     const current_match_players = [];
 
@@ -141,6 +146,56 @@
                                 is_tg_mmr_fallback: settings.show_1v1_rating && !found_player?.mmr_rm_1v1,
                             };
 
+                            // Cached player stats.
+                            const player_stats = player_stats_cache[found_player.id];
+
+                            // Cache expiration.
+                            const minutes_to_save_for = 1;
+                            const milliseconds_to_save_for = minutes_to_save_for * 60 * 1000;
+                            const time_in_future = player_stats?.from + milliseconds_to_save_for;
+
+                            const current_time = Date.now();
+
+                            if (player_stats && (time_in_future >= current_time)) {
+                                // Add player stats from cache.
+                                players[found_player.id].wins = player_stats?.wins;
+                                players[found_player.id].losses = player_stats?.losses;
+                                players[found_player.id].winrate = player_stats?.winrate;
+                                players[found_player.id].number_of_games = player_stats?.number_of_games;
+                            } else {
+                                // Add player stats.
+                                const {leaderboard: player_stats} = await get_current_player(found_player.id);
+
+                                // Initialize player stats cache.
+                                player_stats_cache[found_player.id] = {
+                                    from: Date.now(),
+                                };
+
+                                if (Array.isArray(player_stats) && player_stats?.length > 0) {
+                                    const wins = player_stats[0].wins;
+                                    const losses = player_stats[0].losses;
+                                    const number_of_games = wins + losses;
+
+                                    // Winrate.
+                                    const winrate = get_winrate({wins, number_of_games});
+
+                                    // Set player stats.
+                                    players[found_player.id].wins = wins;
+                                    players[found_player.id].losses = losses;
+                                    players[found_player.id].winrate = winrate;
+                                    players[found_player.id].number_of_games = number_of_games;
+
+                                    // Set player stats cache.
+                                    player_stats_cache[found_player.id] = {
+                                        wins,
+                                        losses,
+                                        winrate,
+                                        number_of_games,
+                                        from: Date.now(),
+                                    };
+                                }
+                            }
+
                             found_player.profile_id = found_player.id;
                             found_player.civ = found_player?.civilization;
                             found_player.team = team;
@@ -157,13 +212,8 @@
                     });
 
                     current_players = players;
-                    current_match.players = current_match_players;
-
-                    // Player leaderboard stats.
-                    if (settings.show_1v1_rating) {
-                        settings.leaderboard_id = 3;
-                        set_current_players();
-                    }
+                    match.players = current_match_players;
+                    current_match = match;
 
                 } catch (error) {
                     console.error("JSON ERROR", error);
@@ -232,23 +282,33 @@
         for (const {profile_id} of current_match.players) {
             const {leaderboard: player} = await get_current_player(profile_id);
 
+            // Data check.
             if (!Array.isArray(player) || player?.length < 1) continue;
 
-            // Calculate winrate.
+            // Stats.
             const wins = player[0].wins;
 			const losses = player[0].losses;
 			const number_of_games = wins + losses;
-			let winrate = (wins / number_of_games) * 100;
 
-            // Convert float to 2 decimal.
-            if (!Number.isInteger(winrate)) {
-                winrate = winrate.toFixed(2);
-            }
+            // Winrate.
+            const winrate = get_winrate({wins, number_of_games});
 
+            // Overwrite.
             player[0].winrate = winrate;
-
-            current_players[player[0].profile_id] = player[0];
+            player[0].number_of_games = number_of_games;
+            current_players[profile_id] = player[0];
         }
+    }
+
+    function get_winrate({wins, number_of_games}) {
+        let winrate = (wins / number_of_games) * 100;
+
+        // Convert float to 2 decimal.
+        if (!Number.isInteger(winrate)) {
+            winrate = winrate.toFixed(2);
+        }
+
+        return winrate;
     }
 
     async function get_current_player(profile_id) {
