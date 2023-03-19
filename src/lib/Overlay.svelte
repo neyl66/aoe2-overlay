@@ -87,7 +87,7 @@
                 try {
                     console.log("data:", JSON.parse(event.data));
 
-                    const {player, match, type} = JSON.parse(event.data)?.data ?? JSON.parse(event.data) ?? "";
+                    const {player, match} = JSON.parse(event.data)?.data ?? JSON.parse(event.data) ?? "";
 
                     if (!player) return console.error("No player!");
 
@@ -101,7 +101,7 @@
                         // Show watched player.
                         if (player && Object.keys(current_match).length < 1) {
                             current_players = {
-                                [player.id] : {
+                                [player.id]: {
                                     rating: settings.show_1v1_rating && player?.mmr_rm_1v1 ? player?.mmr_rm_1v1 : player?.mmr_rm_tg,
                                     rank: player?.rank_rm_1v1,
                                     profile_id: player?.id,
@@ -113,7 +113,7 @@
                             current_match = {
                                 players: [
                                     player,
-                                ]
+                                ],
                             };
                         }
 
@@ -213,7 +213,6 @@
 
                     current_players = players;
                     match.players = current_match_players;
-                    match.type = type;
                     current_match = match;
 
                 } catch (error) {
@@ -366,9 +365,9 @@
 
         <div class="match-info">
             <!-- Indicate queuing. -->
-            {#if (current_match?.type?.toLowerCase() === "queuing")}
+            {#if (settings?.player?.status?.toLowerCase() === "queuing")}
                 <svg width="19" height="19" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#fff" class="spinner"><path d="M12 1a11 11 0 1 0 11 11A11 11 0 0 0 12 1Zm0 19a8 8 0 1 1 8-8 8 8 0 0 1-8 8Z" opacity=".25"/><path d="M10.14 1.16a11 11 0 0 0-9 8.92A1.59 1.59 0 0 0 2.46 12a1.52 1.52 0 0 0 1.65-1.3 8 8 0 0 1 6.66-6.61A1.42 1.42 0 0 0 12 2.69a1.57 1.57 0 0 0-1.86-1.53Z" class="spinner-inner"/></svg>
-                {current_match.type.toUpperCase()}
+                {settings.player.status.toUpperCase()}
                 |
             {/if}
 
