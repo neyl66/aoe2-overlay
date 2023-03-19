@@ -150,7 +150,7 @@
                             const player_stats = player_stats_cache[found_player.id];
 
                             // Cache expiration.
-                            const minutes_to_save_for = 1;
+                            const minutes_to_save_for = 10;
                             const milliseconds_to_save_for = minutes_to_save_for * 60 * 1000;
                             const time_in_future = player_stats?.from + milliseconds_to_save_for;
 
