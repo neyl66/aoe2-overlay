@@ -383,8 +383,20 @@
             <!-- Game type. -->
             {#if (settings?.leaderboard)}
                 {settings.leaderboard[current_match.leaderboard_id]}
-            {:else if (current_match?.game_type)}
-                {current_match.game_type}
+            {:else}
+                {#if (current_match?.game_type)}
+                    {current_match.game_type}
+                {/if}
+
+                <!-- Diplomacy. -->
+                {#if (current_match?.diplomacy)}
+                    {current_match.diplomacy}
+                {/if}
+
+                <!-- Team size. -->
+                {#if (current_match?.team_size && current_match?.team_size !== current_match?.diplomacy)}
+                    {current_match.team_size}
+                {/if}
             {/if}
 
             <!-- Server name. -->
