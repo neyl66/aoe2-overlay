@@ -16,6 +16,16 @@
             timer: 0,
             interval: 30 * 1000,
         },
+        player_colors: [
+            "#6599d8",
+            "#f25f5f",
+            "#00ee00",
+            "#ffd700",
+            "#00eeee",
+            "#ea69e1",
+            "#808080",
+            "#ff8c00",
+        ],
         servers: {
             ukwest: "UK West",
             westeurope: "EU West",
@@ -421,7 +431,13 @@
 
                                 <div class="player-civ">
                                     <img src={civ_image_url} class="civ-flag" width="33" height="33" alt="">
-                                    {settings ?.civs ? settings.civs[player.civ] : player.civilization}
+                                    <span class="player-civ-name">{settings ?.civs ? settings.civs[player.civ] : player.civilization}</span>
+
+                                    {#if (is_team_game && player.color_id >= 0)}
+                                        <div class="player-color" style:background-color={[settings.player_colors[player.color_id]]}>
+                                            {player.color_id + 1}
+                                        </div>
+                                    {/if}
                                 </div>
                             {/if}
 
@@ -556,6 +572,26 @@
     }
     .players.-team .player-civ {
         order: 2;
+    }
+    .player-civ-name {
+        flex-grow: 1;
+    }
+    .player-color {
+        --width: 17px;
+        --height: var(--width);
+        --font-size: 70%;
+        --color: #000;
+
+        width: var(--width);
+        height: var(--height);
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-shrink: 0;
+        color: var(--color);
+        font-size: var(--font-size);
+        font-family: monospace;
     }
 
     .player-name-wrap {
