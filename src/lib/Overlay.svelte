@@ -592,6 +592,7 @@
         color: var(--color);
         font-size: var(--font-size);
         font-family: monospace;
+        font-weight: bold;
     }
 
     .player-name-wrap {
