@@ -37,6 +37,7 @@
             australiasoutheast: "Australia SE",
         },
         show_1v1_rating: true,
+        show_player_colors_before_name: true,
 	};
 
 	let current_match = {};
@@ -433,7 +434,7 @@
                                     <img src={civ_image_url} class="civ-flag" width="33" height="33" alt="">
                                     <span class="player-civ-name">{settings ?.civs ? settings.civs[player.civ] : player.civilization}</span>
 
-                                    {#if (is_team_game && player.color_id >= 0)}
+                                    {#if (!settings.show_player_colors_before_name && is_team_game && player.color_id >= 0)}
                                         <div class="player-color" style:background-color={[settings.player_colors[player.color_id]]}>
                                             {player.color_id + 1}
                                         </div>
@@ -445,6 +446,12 @@
                             <div class="player-name-wrap">
                                 {#if (current_players[player.profile_id]?.country)}
                                     <img src={`https://flagicons.lipis.dev/flags/1x1/${current_players[player.profile_id].country.toLowerCase()}.svg`} class="flag" width="20" height="20" alt={current_players[player.profile_id].country}>
+                                {/if}
+
+                                {#if (settings.show_player_colors_before_name && is_team_game && player.color_id >= 0)}
+                                    <div class="player-color" style:background-color={[settings.player_colors[player.color_id]]}>
+                                        {player.color_id + 1}
+                                    </div>
                                 {/if}
 
                                 <div class="player-name-inner">
@@ -598,7 +605,11 @@
     .player-name-wrap {
         display: flex;
         align-items: center;
-        font-size: 1.2em;
+    }
+    .player-name-wrap .player-color {
+        --width: 20px;
+        margin-right: 7px;
+        margin-left: -3px;
     }
 
     .civ-flag {
