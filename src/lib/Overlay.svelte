@@ -443,18 +443,20 @@
                                 </div>
                             {/if}
 
-                            <!-- Player name. -->
                             <div class="player-name-wrap">
+                                <!-- Player country. -->
                                 {#if (current_players[player.profile_id]?.country)}
                                     <img src={`https://flagicons.lipis.dev/flags/1x1/${current_players[player.profile_id].country.toLowerCase()}.svg`} class="flag" width="20" height="20" alt={current_players[player.profile_id].country}>
                                 {/if}
 
+                                <!-- Player color & team number. -->
                                 {#if (settings.show_player_colors_before_name && is_team_game && player?.color_id >= 0)}
                                     <div class="player-color" style:background-color={[settings.player_colors[player.color_id]]}>
                                         {player.color_id + 1}
                                     </div>
                                 {/if}
 
+                                <!-- Player name. -->
                                 <div class="player-name-inner">
                                     <span use:fit={{min_size: 14, max_size: 26}}>
                                         {#if (settings.use_ingame_name && player?.user_name)}
@@ -487,6 +489,7 @@
                                 <span class="rank">(#{current_players[player.profile_id].rank})</span>
                             {/if}
 
+                            <!-- New line for 1v1 games. -->
                             {#if (!is_team_game)}
                                 <br>
                             {/if}
