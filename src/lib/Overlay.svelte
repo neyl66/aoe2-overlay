@@ -38,6 +38,7 @@
         },
         show_1v1_rating: true,
         show_player_colors_before_name: true,
+        use_ingame_name: true,
 	};
 
 	let current_match = {};
@@ -455,7 +456,13 @@
                                 {/if}
 
                                 <div class="player-name-inner">
-                                    <span use:fit={{min_size: 14, max_size: 26}}>{player.name}</span>
+                                    <span use:fit={{min_size: 14, max_size: 26}}>
+                                        {#if (settings.use_ingame_name && player?.user_name)}
+                                            {player.user_name}
+                                        {:else}
+                                            {player.name}
+                                        {/if}
+                                    </span>
                                 </div>
                             </div>
                         </div>
