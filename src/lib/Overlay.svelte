@@ -586,7 +586,7 @@
     .player-color {
         --width: 17px;
         --height: var(--width);
-        --font-size: 70%;
+        --font-size: 80%;
         --color: #000;
 
         width: var(--width);
