@@ -433,9 +433,9 @@
 
                                 <div class="player-civ">
                                     <img src={civ_image_url} class="civ-flag" width="33" height="33" alt="">
-                                    <span class="player-civ-name">{settings ?.civs ? settings.civs[player.civ] : player.civilization}</span>
+                                    <span class="player-civ-name">{settings?.civs ? settings.civs[player.civ] : player.civilization}</span>
 
-                                    {#if (!settings.show_player_colors_before_name && is_team_game && player.color_id >= 0)}
+                                    {#if (!settings.show_player_colors_before_name && is_team_game && player?.color_id >= 0)}
                                         <div class="player-color" style:background-color={[settings.player_colors[player.color_id]]}>
                                             {player.color_id + 1}
                                         </div>
@@ -449,7 +449,7 @@
                                     <img src={`https://flagicons.lipis.dev/flags/1x1/${current_players[player.profile_id].country.toLowerCase()}.svg`} class="flag" width="20" height="20" alt={current_players[player.profile_id].country}>
                                 {/if}
 
-                                {#if (settings.show_player_colors_before_name && is_team_game && player.color_id >= 0)}
+                                {#if (settings.show_player_colors_before_name && is_team_game && player?.color_id >= 0)}
                                     <div class="player-color" style:background-color={[settings.player_colors[player.color_id]]}>
                                         {player.color_id + 1}
                                     </div>
