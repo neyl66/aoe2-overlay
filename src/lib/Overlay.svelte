@@ -33,6 +33,7 @@
             westus2: "US West 2",
             southeastasia: "Asia SE",
             westindia: "India West",
+            centralindia: "India Central",
             koreacentral: "Korea Central",
             australiasoutheast: "Australia SE",
         },
