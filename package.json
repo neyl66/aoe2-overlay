@@ -15,6 +15,7 @@
         "vite": "^3.1.0"
     },
     "dependencies": {
+        "@isaacs/ttlcache": "^1.2.2",
         "@leveluptuts/svelte-fit": "^1.0.3",
         "sockette": "^2.0.6"
     }

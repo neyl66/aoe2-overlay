@@ -5,6 +5,12 @@
     import {meta} from "tinro";
     const route = meta();
 
+    import TTLCache from "@isaacs/ttlcache";
+    const player_stats_cache = new TTLCache({
+        // Cache for 15 minutes.
+        ttl: 15 * 60 * 1000,
+    });
+
     const player_url = (profile_id, leaderboard_id) => `https://legacy.aoe2companion.com/api/leaderboard?game=aoe2de&leaderboard_id=${leaderboard_id}&count=1&profile_id=${profile_id}`;
     const match_url = (profile_id) => `https://legacy.aoe2companion.com/api/player/matches?game=aoe2de&start=0&count=1&profile_ids=${profile_id}`;
 
@@ -77,8 +83,6 @@
             settings.login = null;
         }
 
-        const player_stats_cache = {};
-
         const socket = new Sockette("wss://aoe2recs.com/dashboard/overlay-api/", {
             timeout: 10_000,
             maxAttempts: Infinity,
@@ -135,7 +139,6 @@
 
                     if (!match?.teams) return console.error("No teams!");
 
-                    const players = {};
                     const current_match_players = [];
 
                     // Make watched player team always first.
@@ -146,68 +149,14 @@
                         return 1;
                     });
 
+                    const profile_ids = match.teams.flat();
+                    const players = await get_player_stats(profile_ids);
+
                     // Prepare current players.
                     for (const team of match.teams) {
                         for (const player_id of team) {
                             const found_player = match.players.find((p) => p.id === player_id);
-
-                            players[found_player.id] = {
-                                rating: settings.show_1v1_rating && found_player?.mmr_rm_1v1 ? found_player?.mmr_rm_1v1 : found_player?.mmr_rm_tg,
-                                rank: found_player?.rank_rm_1v1,
-                                profile_id: found_player.id,
-                                country: found_player?.country_code,
-                                is_tg_mmr_fallback: settings.show_1v1_rating && !found_player?.mmr_rm_1v1,
-                            };
-
-                            // Cached player stats.
-                            const player_stats = player_stats_cache[found_player.id];
-
-                            // Cache expiration.
-                            const minutes_to_save_for = 10;
-                            const milliseconds_to_save_for = minutes_to_save_for * 60 * 1000;
-                            const time_in_future = player_stats?.from + milliseconds_to_save_for;
-
-                            const current_time = Date.now();
-
-                            if (player_stats && (time_in_future >= current_time)) {
-                                // Add player stats from cache.
-                                players[found_player.id].wins = player_stats?.wins;
-                                players[found_player.id].losses = player_stats?.losses;
-                                players[found_player.id].winrate = player_stats?.winrate;
-                                players[found_player.id].number_of_games = player_stats?.number_of_games;
-                            } else {
-                                // Add player stats.
-                                const {leaderboard: player_stats} = await get_current_player(found_player.id);
-
-                                // Initialize player stats cache.
-                                player_stats_cache[found_player.id] = {
-                                    from: Date.now(),
-                                };
-
-                                if (Array.isArray(player_stats) && player_stats?.length > 0) {
-                                    const wins = player_stats[0].wins;
-                                    const losses = player_stats[0].losses;
-                                    const number_of_games = wins + losses;
-
-                                    // Winrate.
-                                    const winrate = get_winrate({wins, number_of_games});
-
-                                    // Set player stats.
-                                    players[found_player.id].wins = wins;
-                                    players[found_player.id].losses = losses;
-                                    players[found_player.id].winrate = winrate;
-                                    players[found_player.id].number_of_games = number_of_games;
-
-                                    // Set player stats cache.
-                                    player_stats_cache[found_player.id] = {
-                                        wins,
-                                        losses,
-                                        winrate,
-                                        number_of_games,
-                                        from: Date.now(),
-                                    };
-                                }
-                            }
+                            if (!found_player) continue;
 
                             found_player.profile_id = found_player.id;
                             found_player.civ = found_player?.civilization;
@@ -246,6 +195,78 @@
                 console.log("Error:", event);
             },
         });
+
+        async function get_player_stats(profile_ids) {
+            const cached_players = {};
+
+            // Remove cached profile IDs.
+            const cached_profile_ids = [];
+            for (const profile_id of profile_ids) {
+
+                if (player_stats_cache.has(`${profile_id}`)) {
+                    cached_players[profile_id] = player_stats_cache.get(`${profile_id}`);
+
+                    cached_profile_ids.push(profile_id);
+                }
+            }
+            profile_ids = profile_ids.filter((profile_id) => !cached_profile_ids.includes(profile_id));
+
+            // New profile IDs check.
+            if (profile_ids.length < 1) {
+                return cached_players;
+            }
+
+            const players = await check_players(profile_ids);
+
+            // Modify players.
+            for (let [profile_id, player] of Object.entries(players)) {
+                let player_stats;
+                if (settings.show_1v1_rating) {
+                    player_stats = player.stats["1v1"];
+
+                    // Fallback to TG MMR.
+                    if (!player_stats) {
+                        player.is_tg_mmr_fallback = true;
+                        player_stats = player.stats["tg"];
+                    }
+                } else {
+                    player_stats = player.stats["tg"];
+                }
+
+                const {wins, losses} = player_stats;
+                const number_of_games = wins + losses;
+                const winrate = get_winrate({wins, number_of_games});
+
+                player = {
+                    ...player,
+                    ...player_stats,
+                    number_of_games,
+                    winrate,
+                };
+
+                player_stats_cache.set(`${profile_id}`, player);
+                players[profile_id] = player;
+            }
+
+            return {
+                ...cached_players,
+                ...players,
+            };
+        }
+
+        async function check_players(profile_ids) {
+            const response = await fetch(`https://aoe2-api.neyl.dev/v0/check-players?profile_ids=${profile_ids.join(",")}`).catch((error) => {
+                console.error("Check players fetch error:", error);
+            });
+
+            if (!response?.ok) {
+                console.error(`Check players response not ok! Status: ${response?.status}`);
+                return {};
+            }
+
+            const json = await response.json();
+            return json;
+        }
     }
 
     async function set_current_match() {
@@ -486,7 +507,7 @@
                             {/if}
 
                             <!-- Player rank. -->
-                            {#if (current_players[player.profile_id]?.rank)}
+                            {#if (current_players[player.profile_id]?.rank && current_players[player.profile_id]?.rank > 0)}
                                 <span class="rank">(#{current_players[player.profile_id].rank})</span>
                             {/if}
 
