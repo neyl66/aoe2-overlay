@@ -106,7 +106,7 @@
 
                     const {player, match} = JSON.parse(event.data)?.data ?? JSON.parse(event.data) ?? "";
 
-                    if (!player) return console.error("No player!");
+                    if (!player) return;
 
                     // Store watched player.
                     player.profile_id = player?.id;
@@ -134,10 +134,10 @@
                             };
                         }
 
-                        return console.error("No match!");
+                        return;
                     }
 
-                    if (!match?.teams) return console.error("No teams!");
+                    if (!match?.teams) return;
 
                     const current_match_players = [];
 
