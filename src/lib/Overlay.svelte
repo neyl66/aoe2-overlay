@@ -37,6 +37,7 @@
             westeurope: "EU West",
             eastus: "US East",
             westus2: "US West 2",
+            westus3: "US West 3",
             southeastasia: "Asia SE",
             westindia: "India West",
             centralindia: "India Central",
