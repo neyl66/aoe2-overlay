@@ -175,6 +175,44 @@
                         return 1;
                     });
 
+                    // Detect players best alt accounts.
+                    for (let i = 0; i < current_match_players.length; i++) {
+                        const player = current_match_players[i];
+                        const {rating, accounts = []} = players[player.profile_id] ?? "";
+
+                        let largest_rating = rating;
+                        let alt_name;
+                        let alt_country;
+                        for (const account of accounts) {
+                            let player_stats;
+                            if (settings.show_1v1_rating) {
+                                player_stats = account.stats["1v1"];
+
+                                // Fallback to TG MMR.
+                                if (!player_stats) {
+                                    player_stats = account.stats["tg"];
+                                }
+                            } else {
+                                player_stats = account.stats["tg"];
+                            }
+
+                            if (!player_stats) continue;
+
+                            if (player_stats.rating > largest_rating) {
+                                largest_rating = player_stats.rating;
+                                alt_name = account.username;
+                                alt_country = account.country;
+                            }
+                        }
+
+                        if (largest_rating == rating) continue;
+
+                        current_match_players[i].is_smurf = true;
+                        current_match_players[i].alt_name = alt_name;
+                        current_match_players[i].alt_country = alt_country;
+                        current_match_players[i].alt_rating = largest_rating;
+                    }
+
                     current_players = players;
                     match.players = current_match_players;
                     current_match = match;
@@ -498,13 +536,37 @@
                                     </span>
                                 </div>
                             </div>
+
+                            <!-- Alt account. -->
+                            {#if (player?.is_smurf)}
+                                <div class="player-name-wrap -smurf">
+                                    <!-- Alt account country. -->
+                                    {#if (is_team_game && player?.alt_country)}
+                                        <img src={`https://flagicons.lipis.dev/flags/1x1/${player.alt_country.toLowerCase()}.svg`} class="flag" width="20" height="20" alt={player.alt_country}>
+                                    {/if}
+
+                                    <!-- Smurf icon. -->
+                                    <img src="/images/icon-smurf.png" class="smurf-icon" width="20" height="20" alt="">
+
+                                    <!-- Alt account name. -->
+                                    <div class="player-name-inner">
+                                        <span use:fit={{min_size: 14, max_size: max_font_size}}>
+                                            {player.alt_name}
+                                        </span>
+                                    </div>
+                                </div>
+                            {/if}
                         </div>
 
                         {#if (current_players[player.profile_id])}
                             <!-- Player rating. -->
                             {#if (current_players[player.profile_id]?.rating)}
-                                <span class="rating">
-                                    {current_players[player.profile_id].rating}
+                                <span class={`rating ${(player?.is_smurf) ? "-smurf" : ""}`}>
+                                    {#if (player?.is_smurf)}
+                                        {player.alt_rating}
+                                    {:else}
+                                        {current_players[player.profile_id].rating}
+                                    {/if}
 
                                     <!-- Indicate TG MMR fallback -->
                                     {#if (current_players[player.profile_id]?.is_tg_mmr_fallback)}
@@ -651,6 +713,9 @@
         display: flex;
         align-items: center;
     }
+    .player-name-wrap.-smurf {
+        order: 2;
+    }
     .player-name-wrap .player-color {
         --width: 20px;
         margin-right: 7px;
@@ -672,9 +737,18 @@
         border-radius: 50%;
         margin-right: 7px;
     }
+    .smurf-icon {
+        margin-right: 7px;
+    }
+    .flag + .smurf-icon {
+        margin-left: -3px;
+    }
 
     .rating {
         color: #D2AF26;
+    }
+    .rating.-smurf {
+        color: yellow;
     }
     .players.-team .rating {
         font-size: 0.95em;
