@@ -477,7 +477,7 @@
 
         {#if (current_match.players)}
             {@const is_team_game = current_match.players.length > 2}
-            {@const max_font_size = (!is_team_game) ? 24 : 21}
+            {@const max_font_size = (!is_team_game) ? 24 : 20}
 
             <div class={`players ${is_team_game ? "-team" : ""}`}>
                 {#each current_match.players as player, index (player.profile_id)}
@@ -488,7 +488,7 @@
                             <!-- Civ image. -->
                             {#if (settings?.civs || player?.civilization)}
                                 {@const civ_image_url = `https://aoe2techtree.net/img/Civs/${settings?.civs ? settings.civs[player.civ].toLowerCase() : player.civilization.toLowerCase()}.png`}
-                                {@const civ_flag_size = (!is_team_game) ? 30 : 26}
+                                {@const civ_flag_size = (!is_team_game) ? 30 : 25}
 
                                 <div class="player-civ">
                                     <img src={civ_image_url} class="civ-flag" width={civ_flag_size} height={civ_flag_size} alt="">
@@ -681,7 +681,7 @@
         flex-grow: 1;
     }
     .players.-team .player-civ-name {
-        font-size: 0.95em;
+        font-size: 0.9em;
     }
     .player-color {
         --width: 17px;
@@ -744,7 +744,7 @@
         color: yellow;
     }
     .players.-team .rating {
-        font-size: 0.9em;
+        font-size: 0.85em;
     }
     .team-game-rating {
         color: #00dcf3;
@@ -754,7 +754,7 @@
         font-size: 0.85em;
     }
     .players.-team .rank {
-        font-size: 0.8em;
+        font-size: 0.75em;
     }
 
     .winrate {
@@ -777,14 +777,14 @@
         color: rgb(34 197 94);
     }
     .players.-team .win {
-        font-size: 0.9em;
+        font-size: 0.85em;
     }
 
     .loss {
         color: rgb(237 83 83);
     }
     .players.-team .loss {
-        font-size: 0.9em;
+        font-size: 0.85em;
     }
 </style>
 
