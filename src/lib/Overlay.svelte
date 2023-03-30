@@ -107,7 +107,7 @@
 
                 try {
                     const data = JSON.parse(event.data)?.data ?? JSON.parse(event.data) ?? "";
-                    if (data && (data?.data || data?.match)) {
+                    if (data && (data?.data || data?.match || data?.player)) {
                         console.log("data:", data);
                     }
 
