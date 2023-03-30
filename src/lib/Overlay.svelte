@@ -11,6 +11,8 @@
         ttl: 15 * 60 * 1000,
     });
 
+    import {get_winrate} from "../utils.js";
+
     const player_url = (profile_id, leaderboard_id) => `https://legacy.aoe2companion.com/api/leaderboard?game=aoe2de&leaderboard_id=${leaderboard_id}&count=1&profile_id=${profile_id}`;
     const match_url = (profile_id) => `https://legacy.aoe2companion.com/api/player/matches?game=aoe2de&start=0&count=1&profile_ids=${profile_id}`;
 
@@ -372,17 +374,6 @@
             player[0].number_of_games = number_of_games;
             current_players[profile_id] = player[0];
         }
-    }
-
-    function get_winrate({wins, number_of_games}) {
-        let winrate = (wins / number_of_games) * 100;
-
-        // Convert float to 2 decimal.
-        if (!Number.isInteger(winrate)) {
-            winrate = winrate.toFixed(2);
-        }
-
-        return winrate;
     }
 
     async function get_current_player(profile_id) {
