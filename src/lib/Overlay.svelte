@@ -106,9 +106,12 @@
                 show_error = false;
 
                 try {
-                    console.log("data:", JSON.parse(event.data));
+                    const data = JSON.parse(event.data)?.data ?? JSON.parse(event.data) ?? "";
+                    if (data && (data?.data || data?.match)) {
+                        console.log("data:", data);
+                    }
 
-                    const {player, match} = JSON.parse(event.data)?.data ?? JSON.parse(event.data) ?? "";
+                    const {player, match} = data;
 
                     if (!player) return;
 
