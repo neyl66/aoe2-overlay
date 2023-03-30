@@ -19,7 +19,6 @@
 	let settings = {
 		steam_id: route.query?.steam_id,
         profile_id: route.query?.profile_id,
-        login: route.query?.k ? decodeURIComponent(route.query?.k) : undefined,
         periodic_check: {
             timer: 0,
             interval: 30 * 1000,
@@ -47,6 +46,7 @@
             koreacentral: "Korea Central",
             australiasoutheast: "Australia SE",
         },
+        use_websocket: (route.query?.k) ? true : (route.query?.use_websocket === "true") ? true : false,
         show_1v1_rating: true,
         show_player_colors_before_name: true,
         use_ingame_name: true,
@@ -83,9 +83,6 @@
     }
 
     async function set_websocket_data() {
-        if (settings?.login === "null") {
-            settings.login = null;
-        }
 
         const socket = new Sockette("wss://aoe2recs.com/dashboard/overlay-api/", {
             timeout: 10_000,
@@ -93,9 +90,6 @@
             onopen: (e) => {
                 console.log("Connected!", e);
                 show_error = false;
-                socket.json({
-                    login: settings.login,
-                });
 
                 // Set expected leaderboard ID.
                 if (settings.show_1v1_rating) {
@@ -412,7 +406,7 @@
     onMount(async () => {
         if (!settings.steam_id && !settings.profile_id) return;
 
-        if (settings?.login) {
+        if (settings?.use_websocket) {
             set_websocket_data();
         } else {
             set_static_data();

@@ -26,15 +26,21 @@
         };
     }
 
+    let use_websocket = false;
 </script>
 
 <input type="text" placeholder="search players" bind:value={search_value} on:input={search_players}>
+
+<label for="use-websocket">
+    <input type="checkbox" id="use-websocket" bind:checked={use_websocket}>
+    Use websocket integration
+</label>
 
 {#if (found_players.length > 0) }
     <div class="found-players">
         {#each found_players as player}
             <div class="player">
-                <a href="/?profile_id={player.profile_id}">{player.name}</a>
+                <a href="/?profile_id={player.profile_id}&use_websocket={use_websocket}">{player.name}</a>
             </div>
         {/each}
     </div>
