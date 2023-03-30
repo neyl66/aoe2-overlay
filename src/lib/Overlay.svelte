@@ -488,7 +488,7 @@
                             <!-- Civ image. -->
                             {#if (settings?.civs || player?.civilization)}
                                 {@const civ_image_url = `https://aoe2techtree.net/img/Civs/${settings?.civs ? settings.civs[player.civ].toLowerCase() : player.civilization.toLowerCase()}.png`}
-                                {@const civ_flag_size = "26"}
+                                {@const civ_flag_size = (!is_team_game) ? 30 : 26}
 
                                 <div class="player-civ">
                                     <img src={civ_image_url} class="civ-flag" width={civ_flag_size} height={civ_flag_size} alt="">
