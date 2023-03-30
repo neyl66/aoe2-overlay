@@ -477,7 +477,7 @@
 
         {#if (current_match.players)}
             {@const is_team_game = current_match.players.length > 2}
-            {@const max_font_size = (!is_team_game) ? 24 : 22}
+            {@const max_font_size = (!is_team_game) ? 24 : 21}
 
             <div class={`players ${is_team_game ? "-team" : ""}`}>
                 {#each current_match.players as player, index (player.profile_id)}
@@ -488,9 +488,10 @@
                             <!-- Civ image. -->
                             {#if (settings?.civs || player?.civilization)}
                                 {@const civ_image_url = `https://aoe2techtree.net/img/Civs/${settings?.civs ? settings.civs[player.civ].toLowerCase() : player.civilization.toLowerCase()}.png`}
+                                {@const civ_flag_size = "26"}
 
                                 <div class="player-civ">
-                                    <img src={civ_image_url} class="civ-flag" width="30" height="30" alt="">
+                                    <img src={civ_image_url} class="civ-flag" width={civ_flag_size} height={civ_flag_size} alt="">
                                     <span class="player-civ-name">{settings?.civs ? settings.civs[player.civ] : player.civilization}</span>
 
                                     {#if (!settings.show_player_colors_before_name && is_team_game && player?.color_id >= 0)}
@@ -743,7 +744,7 @@
         color: yellow;
     }
     .players.-team .rating {
-        font-size: 0.95em;
+        font-size: 0.9em;
     }
     .team-game-rating {
         color: #00dcf3;
@@ -762,6 +763,9 @@
         font-size: 0.88em;
     }
     .players.-team .winrate {
+        font-size: 0.8em;
+    }
+    .players.-team .winrate {
         display: inline-flex;
     }
 
@@ -773,14 +777,14 @@
         color: rgb(34 197 94);
     }
     .players.-team .win {
-        font-size: 0.95em;
+        font-size: 0.9em;
     }
 
     .loss {
         color: rgb(237 83 83);
     }
     .players.-team .loss {
-        font-size: 0.95em;
+        font-size: 0.9em;
     }
 </style>
 
