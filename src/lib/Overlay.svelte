@@ -211,6 +211,7 @@
                         current_match_players[i].alt_name = alt_name;
                         current_match_players[i].alt_country = alt_country;
                         current_match_players[i].alt_rating = largest_rating;
+                        current_match_players[i].alt_rating_diff = largest_rating - rating;
                     }
 
                     current_players = players;
@@ -554,6 +555,7 @@
                                 <span class={`rating ${(player?.is_smurf) ? "-smurf" : ""}`}>
                                     {#if (player?.is_smurf)}
                                         {player.alt_rating}
+                                        <span class="rating-diff">(🠕{player.alt_rating_diff})</span>
                                     {:else}
                                         {current_players[player.profile_id].rating}
                                     {/if}
@@ -749,6 +751,10 @@
     }
     .team-game-rating {
         color: #00dcf3;
+    }
+
+    .rating-diff {
+        font-size: 0.8em;
     }
 
     .rank {
