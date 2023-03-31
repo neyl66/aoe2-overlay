@@ -752,7 +752,7 @@
     }
 
     .rank {
-        font-size: 0.85em;
+        font-size: 0.8em;
     }
     .players.-team .rank {
         font-size: 0.75em;
