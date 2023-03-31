@@ -626,7 +626,7 @@
     }
 
     .match-info {
-        font-size: 19px;
+        font-size: 18px;
         text-align: center;
         margin-bottom: 10px;
     }
@@ -739,6 +739,7 @@
 
     .rating {
         color: #D2AF26;
+        font-size: 0.95em;
     }
     .rating.-smurf {
         color: yellow;
@@ -776,14 +777,10 @@
     .win {
         color: rgb(34 197 94);
     }
-    .players.-team .win {
-        font-size: 0.85em;
-    }
-
     .loss {
         color: rgb(237 83 83);
     }
-    .players.-team .loss {
+    .players.-team .win, .players.-team .loss {
         font-size: 0.85em;
     }
 </style>
