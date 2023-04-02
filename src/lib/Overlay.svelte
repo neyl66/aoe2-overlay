@@ -183,6 +183,7 @@
                         let largest_rating = rating;
                         let alt_name;
                         let alt_country;
+                        let alt_rank;
                         for (const account of accounts) {
                             let player_stats;
                             if (settings.show_1v1_rating) {
@@ -202,6 +203,7 @@
                                 largest_rating = player_stats.rating;
                                 alt_name = account.username;
                                 alt_country = account.country;
+                                alt_rank = player_stats.rank;
                             }
                         }
 
@@ -212,6 +214,7 @@
                         current_match_players[i].alt_country = alt_country;
                         current_match_players[i].alt_rating = largest_rating;
                         current_match_players[i].alt_rating_diff = largest_rating - rating;
+                        current_match_players[i].alt_rank = alt_rank;
                     }
 
                     current_players = players;
@@ -570,8 +573,10 @@
                             {/if}
 
                             <!-- Player rank. -->
-                            {#if (current_players[player.profile_id]?.rank && current_players[player.profile_id]?.rank > 0)}
-                                <span class="rank">(#{current_players[player.profile_id].rank})</span>
+                            {#if (current_players[player.profile_id]?.rank && current_players[player.profile_id]?.rank > 0) || (player?.alt_rank > 0)}
+                                {@const rank = (player?.alt_rank > 0) ? player.alt_rank : current_players[player.profile_id].rank}
+
+                                <span class="rank">(#{rank})</span>
                             {/if}
 
                             <!-- New line for 1v1 games. -->
