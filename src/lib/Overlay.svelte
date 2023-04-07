@@ -2,7 +2,7 @@
     import {onMount} from "svelte";
     import {fit} from "@leveluptuts/svelte-fit";
     import Sockette from "sockette";
-    import {meta} from "tinro";
+    import {meta, router} from "tinro";
     const route = meta();
 
     import TTLCache from "@isaacs/ttlcache";
@@ -433,9 +433,17 @@
         }
 	});
 
+    function go_back() {
+        router.goto("/");
+    }
+
 </script>
 
 <div class="overlay" class:-right={settings?.align_right}>
+    <!-- Go back. -->
+    <!-- svelte-ignore a11y-mouse-events-have-key-events -->
+    <button class="back" on:click={go_back} on:mouseover={(event) => event.target.classList.add("-no-animation")}>Go back</button>
+
     <!-- Error icon. -->
     {#if (show_error)}
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="red" class="error-icon"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0zm-9 3.75h.008v.008H12v-.008z"/></svg>
@@ -635,6 +643,29 @@
     }
     .overlay:empty {
         padding: 0;
+    }
+
+    .back {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 500;
+        transition: all .5s;
+    }
+    .back:hover {
+        opacity: 1 !important;
+    }
+    .back:not(.-no-animation) {
+        animation: hide 1s forwards 1s;
+    }
+    .back.-no-animation {
+        opacity: 0;
+    }
+
+    @keyframes hide {
+        to {
+            opacity: 0;
+        }
     }
 
     .error-icon {

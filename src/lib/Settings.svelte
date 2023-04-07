@@ -2,20 +2,52 @@
     import Search from "./Search.svelte";
 
     import {router} from "tinro";
+    import { onMount } from "svelte";
+
+    let url_settings = {
+        profile_id: "",
+        use_websocket: false,
+        align_right: false,
+    };
 
     let selected_player = {};
-    let use_websocket = false;
-    let align_right = false;
-    $: button_disabled = !selected_player?.profile_id;
+    $: if (selected_player?.profile_id) {
+        url_settings.profile_id = selected_player.profile_id
+    };
+
+    $: button_disabled = !url_settings.profile_id;
 
     function go_to_overlay() {
         const url = new URLSearchParams();
-        url.set("profile_id", selected_player.profile_id);
-        url.set("use_websocket", use_websocket);
-        url.set("align_right", align_right);
+
+        // Construct url.
+        for (const [key, value] of Object.entries(url_settings)) {
+            url.set(key, value);
+        }
 
         router.goto(`/?${url.toString()}`);
     }
+
+    onMount(() => {
+        // Restore saved settings.
+        const saved_url_settings = localStorage.getItem("url_settings");
+        if (saved_url_settings) {
+            url_settings = JSON.parse(saved_url_settings);
+        }
+
+        // Restore saved player.
+        const saved_player = localStorage.getItem("selected_player");
+        if (saved_player) {
+            selected_player = JSON.parse(saved_player);
+        }
+
+        // Save data.
+        return () => {
+            localStorage.setItem("url_settings", JSON.stringify(url_settings));
+            localStorage.setItem("selected_player", JSON.stringify(selected_player));
+        }
+    });
+
 </script>
 
 <div class="container">
@@ -26,13 +58,13 @@
 
     <!-- Use websocket. -->
     <label for="use-websocket">
-        <input type="checkbox" id="use-websocket" bind:checked={use_websocket}>
+        <input type="checkbox" id="use-websocket" bind:checked={url_settings.use_websocket}>
         Use websocket integration
     </label>
 
     <!-- Align right. -->
     <label for="align-right">
-        <input type="checkbox" id="align-right" bind:checked={align_right}>
+        <input type="checkbox" id="align-right" bind:checked={url_settings.align_right}>
         Align right
     </label>
 
