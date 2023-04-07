@@ -4,9 +4,9 @@
     import {Route, router} from "tinro";
 
     import Overlay from "./lib/Overlay.svelte";
-    import Search from "./lib/Search.svelte";
+    import Settings from "./lib/Settings.svelte";
 
-    $: is_search = !(Object.keys($router.query).length);
+    $: is_home = !(Object.keys($router.query).length);
 </script>
 
 <svelte:head>
@@ -20,8 +20,8 @@
 </svelte:head>
 
 <Route path="/">
-    {#if (is_search)}
-        <Search />
+    {#if (is_home)}
+        <Settings />
     {:else}
         <Overlay />
     {/if}

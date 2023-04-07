@@ -1,62 +1,79 @@
 <script>
-    const search_url = (search) => `https://legacy.aoe2companion.com/api/profile?game=aoe2de&start=1&count=10&search=${search}`;
+    import AutoComplete from "simple-svelte-autocomplete";
 
-    let found_players = [];
-    let search_value = "";
+    export let selected_player;
 
-    const search_players = debounce(async (event) => {
-        if (!search_value) return;
+    const search_cache = {};
 
-        const response = await fetch(search_url(search_value));
-        if (!response.ok) return;
+    async function search_players(search_value) {
+        if (!search_value) return [];
+
+        if (search_cache[search_value]) return search_cache[search_value];
+
+        const search_url = (search) => `https://legacy.aoe2companion.com/api/profile?game=aoe2de&start=1&count=10&search=${encodeURIComponent(search)}`;
+
+        const response = await fetch(search_url(search_value)).catch((error) => console.error("Search players fetch error!", error));
+
+        if (!response?.ok) {
+            console.error(`Search players fetch not ok! Status: ${response?.status}`);
+            return [];
+        }
 
         const json = await response.json();
 
-        found_players = json.profiles;
+        const {profiles} = json;
 
-    }, 250);
+        search_cache[search_value] = profiles;
 
-    function debounce(callback, wait) {
-        let timeout_id = null;
-        return (...args) => {
-            window.clearTimeout(timeout_id);
-            timeout_id = window.setTimeout(() => {
-                callback.apply(null, args);
-            }, wait);
-        };
+        return profiles;
     }
 
-    let use_websocket = false;
-    let align_right = false;
+    function search_label(player) {
+        if (!player?.country) return player.name;
+        return `[${player.country}] ${player.name}`;
+    }
+
 </script>
 
-<input type="text" placeholder="search players" bind:value={search_value} on:input={search_players}>
-
-<!-- Use websocket. -->
-<label for="use-websocket">
-    <input type="checkbox" id="use-websocket" bind:checked={use_websocket}>
-    Use websocket integration
-</label>
-
-<!-- Align right. -->
-<label for="align-right">
-    <input type="checkbox" id="align-right" bind:checked={align_right}>
-    Align right
-</label>
-
-{#if (found_players.length > 0) }
-    <div class="found-players">
-        {#each found_players as player}
-            <div class="player">
-                <a href="/?profile_id={player.profile_id}&use_websocket={use_websocket}&align_right={align_right}">{player.name}</a>
-            </div>
-        {/each}
-    </div>
-{/if}
+<div class="search">
+    <AutoComplete searchFunction={search_players} bind:selectedItem={selected_player} labelFunction={search_label} maxItemsToShowInList={10} delay={250} localFiltering={false} showLoadingIndicator={true} placeholder="search players" />
+</div>
 
 <style>
-    .player a {
-        color: #fff;
-        text-decoration: underline;
+    .search {
+        margin-bottom: 0.5em;
+    }
+
+    .search :global(.autocomplete-input) {
+        padding: 0.4em;
+        padding-right: 2em;
+        margin-bottom: 0;
+    }
+
+    .search :global(.select.is-loading::after) {
+        content: "";
+        height: 1em;
+        width: 1em;
+        border: 2px solid #dbdbdb;
+        border-radius: 50%;
+        border-right-color: transparent;
+        border-top-color: transparent;
+        animation: spin 500ms infinite linear;
+        position: absolute;
+        right: 0.625em;
+        top: 0.5em;
+    }
+
+    .search :global(.autocomplete-list-item-loading) {
+        color: #333;
+    }
+
+    @keyframes spin {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(359deg);
+        }
     }
 </style>
