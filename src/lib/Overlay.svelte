@@ -46,11 +46,12 @@
             koreacentral: "Korea Central",
             australiasoutheast: "Australia SE",
         },
-        use_websocket: (route.query?.k) ? true : (route.query?.use_websocket === "true") ? true : false,
+        use_websocket: (route.query?.k) ? true : (route.query?.use_websocket === "true"),
         show_1v1_rating: true,
         show_player_colors_before_name: true,
         use_ingame_name: true,
         align_right: route.query?.align_right === "true",
+        hide_rank_over: route.query?.hide_rank_over || Infinity,
 	};
 
 	let current_match = {};
@@ -597,7 +598,9 @@
                             {#if (current_players[player.profile_id]?.rank && current_players[player.profile_id]?.rank > 0) || (player?.alt_rank > 0)}
                                 {@const rank = (player?.alt_rank > 0) ? player.alt_rank : current_players[player.profile_id].rank}
 
-                                <span class="rank">(#{rank})</span>
+                                {#if (rank <= settings.hide_rank_over)}
+                                    <span class="rank">(#{rank})</span>
+                                {/if}
                             {/if}
 
                             <!-- New line for 1v1 games. -->

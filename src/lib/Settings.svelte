@@ -8,6 +8,7 @@
         profile_id: "",
         use_websocket: false,
         align_right: false,
+        hide_rank_over: 1000,
     };
 
     let selected_player = {};
@@ -66,6 +67,12 @@
     <label for="align-right">
         <input type="checkbox" id="align-right" bind:checked={url_settings.align_right}>
         Align right
+    </label>
+
+    <!-- Hide rank over. -->
+    <label for="hide-rank-over">
+        Hide rank over
+        <input type="text" id="hide-rank-over" bind:value={url_settings.hide_rank_over}>
     </label>
 
     <button on:click={go_to_overlay} disabled={button_disabled}>Go to overlay</button>
