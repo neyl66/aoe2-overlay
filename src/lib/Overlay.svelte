@@ -632,13 +632,13 @@
 </div>
 
 <style>
-    .overlay {
+    :global(.overlay) {
         position: relative;
         width: 420px;
         background: linear-gradient(90deg, rgba(51,51,51,1) 0%, rgba(51,51,51,1) 100%);
         padding: 10px;
     }
-    .overlay.-right {
+    :global(.overlay.-right) {
         margin-left: auto;
     }
     .overlay:empty {

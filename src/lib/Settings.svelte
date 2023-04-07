@@ -50,7 +50,7 @@
 
 </script>
 
-<div class="container">
+<div class="container overlay" class:-right={url_settings.align_right}>
     <h2>Settings</h2>
 
     <!-- Search player. -->
