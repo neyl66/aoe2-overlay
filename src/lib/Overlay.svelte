@@ -414,7 +414,7 @@
 		settings.periodic_check.timer = 0;
 	}
 
-    onMount(async () => {
+    onMount(() => {
         if (!settings.steam_id && !settings.profile_id) return;
 
         if (settings?.use_websocket) {
@@ -423,6 +423,13 @@
             set_static_data();
             set_data();
 		    start_periodic_check();
+        }
+
+        // Clean up.
+        return () => {
+            if (!settings?.use_websocket) {
+                window.stop_periodic_check();
+            }
         }
 	});
 
