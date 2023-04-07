@@ -8,6 +8,7 @@
         profile_id: "",
         use_websocket: false,
         align_right: false,
+        hide_mmr_label: false,
         hide_rank_over: 1000,
     };
 
@@ -67,6 +68,12 @@
     <label for="align-right">
         <input type="checkbox" id="align-right" bind:checked={url_settings.align_right}>
         Align right
+    </label>
+
+    <!-- Align right. -->
+    <label for="hide-mmr-label">
+        <input type="checkbox" id="hide-mmr-label" bind:checked={url_settings.hide_mmr_label}>
+        Hide "MMR" label
     </label>
 
     <!-- Hide rank over. -->

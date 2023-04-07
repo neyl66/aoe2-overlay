@@ -52,6 +52,7 @@
         use_ingame_name: true,
         align_right: route.query?.align_right === "true",
         hide_rank_over: route.query?.hide_rank_over || Infinity,
+        hide_mmr_label: route.query?.hide_mmr_label === "true",
 	};
 
 	let current_match = {};
@@ -590,7 +591,10 @@
                                         <span class="team-game-rating">TG</span>
                                     {/if}
 
-                                    <span class="rating-mmr">MMR</span>
+                                    <!-- MMR label. -->
+                                    {#if (!settings.hide_mmr_label)}
+                                        <span class="rating-mmr">MMR</span>
+                                    {/if}
                                 </span>
                             {/if}
 
