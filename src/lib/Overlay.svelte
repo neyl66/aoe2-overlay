@@ -241,7 +241,7 @@
 
                 if ([1e3, 1001, 1005].includes(code)) {
                     console.log("MANUAL RECONNECT!");
-                    ws.reconnect(event);
+                    socket.reconnect(event);
                 }
             },
         });
