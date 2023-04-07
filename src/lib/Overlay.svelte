@@ -239,7 +239,7 @@
                 console.log("Error:", event);
                 const {code, reason} = event;
 
-                if ([1e3, 1001, 1005].includes(code)) {
+                if ([1000, 1001, 1005].includes(code)) {
                     console.log("MANUAL RECONNECT!");
                     socket.reconnect(event);
                 }
