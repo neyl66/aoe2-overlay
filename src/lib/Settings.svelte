@@ -9,6 +9,7 @@
         use_websocket: false,
         align_right: false,
         hide_mmr_label: false,
+        hide_winrate_icon: false,
         hide_last_match_date: false,
         show_last_match_date_over: 30,
         hide_rank_over: 1000,
@@ -76,6 +77,12 @@
     <label for="hide-mmr-label">
         <input type="checkbox" id="hide-mmr-label" bind:checked={url_settings.hide_mmr_label}>
         Hide "MMR" label
+    </label>
+
+    <!-- Hide MMR label. -->
+    <label for="hide-winrate-icon">
+        <input type="checkbox" id="hide-winrate-icon" bind:checked={url_settings.hide_winrate_icon}>
+        Hide winrate icon
     </label>
 
     <!-- Hide last match date. -->
