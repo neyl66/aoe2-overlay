@@ -36,12 +36,17 @@
 </script>
 
 <div class="search">
+    Player
     <AutoComplete searchFunction={search_players} bind:selectedItem={selected_player} labelFunction={search_label} maxItemsToShowInList={10} delay={250} localFiltering={false} showLoadingIndicator={true} placeholder="search players" />
 </div>
 
 <style>
     .search {
         margin-bottom: 0.5em;
+    }
+
+    .search :global(.autocomplete) {
+        vertical-align: middle;
     }
 
     .search :global(.autocomplete-input) {
