@@ -9,9 +9,9 @@
         use_websocket: false,
         align_right: false,
         hide_mmr_label: false,
-        hide_rank_over: 1000,
         hide_last_match_date: false,
         show_last_match_date_over: 30,
+        hide_rank_over: 1000,
     };
 
     let selected_player = {};
