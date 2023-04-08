@@ -57,6 +57,7 @@
         hide_last_match_date: route.query?.hide_last_match_date === "true",
         show_last_match_date_over: route.query?.show_last_match_date_over ?? 30,
         hide_winrate_icon: route.query?.hide_winrate_icon === "true",
+        hide_last_match_date_icon: route.query?.hide_last_match_date_icon === "true",
 	};
 
 	let current_match = {};
@@ -646,7 +647,11 @@
                                     {#if (last_match_days_ago > settings.show_last_match_date_over)}
                                         {@const last_match_date_formatted = (last_match_days_ago < 30) ? `${last_match_days_ago}d` : (last_match_days_ago < 360) ? `${Math.round(last_match_days_ago / 30)}m` : `${Math.round(last_match_days_ago / 360)}y`}
                                         <span class="last-match-date">{last_match_date_formatted}</span>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#fff" class="last-match-date-icon"><path fill-rule="evenodd" d="M6.75 2.25A.75.75 0 0 1 7.5 3v1.5h9V3A.75.75 0 0 1 18 3v1.5h.75a3 3 0 0 1 3 3v11.25a3 3 0 0 1-3 3H5.25a3 3 0 0 1-3-3V7.5a3 3 0 0 1 3-3H6V3a.75.75 0 0 1 .75-.75zm13.5 9a1.5 1.5 0 0 0-1.5-1.5H5.25a1.5 1.5 0 0 0-1.5 1.5v7.5a1.5 1.5 0 0 0 1.5 1.5h13.5a1.5 1.5 0 0 0 1.5-1.5v-7.5z" clip-rule="evenodd"/></svg>
+
+                                        <!-- Last match date icon. -->
+                                        {#if (!settings.hide_last_match_date_icon)}
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#fff" class="last-match-date-icon"><path fill-rule="evenodd" d="M6.75 2.25A.75.75 0 0 1 7.5 3v1.5h9V3A.75.75 0 0 1 18 3v1.5h.75a3 3 0 0 1 3 3v11.25a3 3 0 0 1-3 3H5.25a3 3 0 0 1-3-3V7.5a3 3 0 0 1 3-3H6V3a.75.75 0 0 1 .75-.75zm13.5 9a1.5 1.5 0 0 0-1.5-1.5H5.25a1.5 1.5 0 0 0-1.5 1.5v7.5a1.5 1.5 0 0 0 1.5 1.5h13.5a1.5 1.5 0 0 0 1.5-1.5v-7.5z" clip-rule="evenodd"/></svg>
+                                        {/if}
                                     {/if}
                                 {/if}
                             </div>

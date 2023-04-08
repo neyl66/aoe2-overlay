@@ -11,6 +11,7 @@
         hide_mmr_label: false,
         hide_winrate_icon: false,
         hide_last_match_date: false,
+        hide_last_match_date_icon: false,
         show_last_match_date_over: 30,
         hide_rank_over: 1000,
     };
@@ -79,7 +80,7 @@
         Hide "MMR" label
     </label>
 
-    <!-- Hide MMR label. -->
+    <!-- Hide winrate icon. -->
     <label for="hide-winrate-icon">
         <input type="checkbox" id="hide-winrate-icon" bind:checked={url_settings.hide_winrate_icon}>
         Hide winrate icon
@@ -92,6 +93,12 @@
     </label>
 
     {#if (!url_settings.hide_last_match_date)}
+        <!-- Hide last match date icon. -->
+        <label for="hide-last-match-date-icon">
+            <input type="checkbox" id="hide-last-match-date-icon" bind:checked={url_settings.hide_last_match_date_icon}>
+            Hide last match date icon
+        </label>
+
         <!-- Hide rank over. -->
         <label for="show-last-match-date-over">
             Show last match date over
