@@ -844,7 +844,7 @@
     .players.-team .winrate-last-match-data-container {
         font-size: 0.8em;
     }
-    .players.-team .winrate {
+    .players.-team .winrate-last-match-data-container {
         display: inline-flex;
     }
 
