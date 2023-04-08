@@ -10,6 +10,8 @@
         align_right: false,
         hide_mmr_label: false,
         hide_rank_over: 1000,
+        hide_last_match_date: false,
+        show_last_match_date_over: 30,
     };
 
     let selected_player = {};
@@ -70,16 +72,30 @@
         Align right
     </label>
 
-    <!-- Align right. -->
+    <!-- Hide MMR label. -->
     <label for="hide-mmr-label">
         <input type="checkbox" id="hide-mmr-label" bind:checked={url_settings.hide_mmr_label}>
         Hide "MMR" label
     </label>
 
+    <!-- Hide last match date. -->
+    <label for="hide-last-match-date">
+        <input type="checkbox" id="hide-last-match-date" bind:checked={url_settings.hide_last_match_date}>
+        Hide last match date
+    </label>
+
+    {#if (!url_settings.hide_last_match_date)}
+        <!-- Hide rank over. -->
+        <label for="show-last-match-date-over">
+            Show last match date over
+            <input type="text" id="show-last-match-date-over" placeholder="days" bind:value={url_settings.show_last_match_date_over}>
+        </label>
+    {/if}
+
     <!-- Hide rank over. -->
     <label for="hide-rank-over">
         Hide rank over
-        <input type="text" id="hide-rank-over" bind:value={url_settings.hide_rank_over}>
+        <input type="text" id="hide-rank-over" placeholder="number" bind:value={url_settings.hide_rank_over}>
     </label>
 
     <button on:click={go_to_overlay} disabled={button_disabled}>Go to overlay</button>
