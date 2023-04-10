@@ -449,7 +449,7 @@
 <div class="overlay" class:-right={settings?.align_right}>
     <!-- Go back. -->
     <!-- svelte-ignore a11y-mouse-events-have-key-events -->
-    <button class="back" on:click={go_back} on:mouseover={(event) => event.target.classList.add("-no-animation")}>Go back</button>
+    <button class="back" on:click={go_back} on:mouseover={(event) => event.target.classList.add("-no-animation")}>Go to settings</button>
 
     <!-- Error icon. -->
     {#if (show_error)}
