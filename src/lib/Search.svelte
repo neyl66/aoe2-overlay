@@ -1,4 +1,6 @@
 <script>
+    import CountryFlag from "./components/CountryFlag.svelte";
+
     import AutoComplete from "simple-svelte-autocomplete";
 
     export let selected_player;
@@ -28,16 +30,16 @@
         return profiles;
     }
 
-    function search_label(player) {
-        if (!player?.country) return player.name;
-        return `[${player.country}] ${player.name}`;
-    }
-
 </script>
 
 <div class="search">
     Player
-    <AutoComplete searchFunction={search_players} bind:selectedItem={selected_player} labelFunction={search_label} maxItemsToShowInList={10} delay={250} localFiltering={false} showLoadingIndicator={true} placeholder="search players" />
+    <AutoComplete searchFunction={search_players} bind:selectedItem={selected_player} labelFieldName="name" maxItemsToShowInList={10} delay={250} localFiltering={false} showLoadingIndicator={true} placeholder="search players">
+        <div class="player-dropdown" slot="item" let:item={player} let:label={label}>
+            <CountryFlag country={player.country} circle={false} ratio={"4x3"} height={15} />
+            <span>{@html label}</span>
+        </div>
+    </AutoComplete>
 </div>
 
 <style>
@@ -71,6 +73,15 @@
 
     .search :global(.autocomplete-list-item-loading) {
         color: #333;
+    }
+
+    .search .player-dropdown {
+        display: flex;
+        align-items: center;
+        column-gap: 8px;
+    }
+    .search :global(.country-flag) {
+        outline: 1px solid #e9ecef;
     }
 
     @keyframes spin {
