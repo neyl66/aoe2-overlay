@@ -95,7 +95,7 @@
 
     async function set_websocket_data() {
 
-        const socket = new Sockette("wss://aoe2recs.com/dashboard/overlay-api/", {
+        settings.socket = new Sockette("wss://aoe2recs.com/dashboard/overlay-api/", {
             timeout: 10_000,
             maxAttempts: Infinity,
             onopen: (e) => {
@@ -251,7 +251,7 @@
 
                 if ([1000, 1001, 1005].includes(code)) {
                     console.log("MANUAL RECONNECT!");
-                    socket.reconnect(event);
+                    settings.socket.reconnect(event);
                 }
             },
         });
@@ -437,7 +437,9 @@
 
         // Clean up.
         return () => {
-            if (!settings?.use_websocket) {
+            if (settings?.use_websocket) {
+                settings.socket.close();
+            } else {
                 window.stop_periodic_check();
             }
         }
