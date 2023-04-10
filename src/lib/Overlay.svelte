@@ -452,7 +452,9 @@
 <div class="overlay" class:-right={settings?.align_right}>
     <!-- Go back. -->
     <!-- svelte-ignore a11y-mouse-events-have-key-events -->
-    <button class="back" on:click={go_back} on:mouseover={(event) => event.target.classList.add("-no-animation")}>Go to settings</button>
+    <button class="back" on:click={go_back} on:mouseover={(event) => event.target.classList.add("-no-animation")}>
+        <Icon type="settings" width={30} height={30} />
+    </button>
 
     <!-- Error icon. -->
     {#if (show_error)}
@@ -682,14 +684,25 @@
     }
 
     .back {
+        background: none;
+        border: none;
         position: absolute;
         top: 0;
         left: 0;
         z-index: 500;
+        padding: 0.5em;
+        cursor: pointer;
         transition: all .5s;
     }
     .back:hover {
         opacity: 1 !important;
+    }
+    .back :global(.settings-icon) {
+        display: block;
+        transition: all .35s;
+    }
+    .back:hover :global(.settings-icon) {
+        fill: rgba(255, 255, 255, 0.1);
     }
     .back:not(.-no-animation) {
         animation: hide 1s forwards 1s;
