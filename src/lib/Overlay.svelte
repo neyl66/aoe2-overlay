@@ -1,6 +1,8 @@
 <script>
     import {onMount} from "svelte";
+    import CountryFlag from "./components/CountryFlag.svelte";
     import {fit} from "@leveluptuts/svelte-fit";
+
     import Sockette from "sockette";
     import dayjs from "dayjs";
     import {meta, router} from "tinro";
@@ -537,7 +539,7 @@
                             <div class="player-name-wrap">
                                 <!-- Player country. -->
                                 {#if (current_players[player.profile_id]?.country)}
-                                    <img src={`https://flagicons.lipis.dev/flags/1x1/${current_players[player.profile_id].country.toLowerCase()}.svg`} class="flag" width="20" height="20" alt={current_players[player.profile_id].country}>
+                                    <CountryFlag country={current_players[player.profile_id].country} />
                                 {/if}
 
                                 <!-- Player color & team number. -->
@@ -564,7 +566,7 @@
                                 <div class="player-name-wrap -smurf">
                                     <!-- Alt account country. -->
                                     {#if (is_team_game && player?.alt_country)}
-                                        <img src={`https://flagicons.lipis.dev/flags/1x1/${player.alt_country.toLowerCase()}.svg`} class="flag" width="20" height="20" alt={player.alt_country}>
+                                        <CountryFlag country={player.alt_country} />
                                     {/if}
 
                                     <!-- Smurf icon. -->
@@ -810,14 +812,13 @@
         text-overflow: ellipsis;
     }
 
-    .flag {
-        border-radius: 50%;
+    .player :global(.country-flag) {
         margin-right: 7px;
     }
     .smurf-icon {
         margin-right: 7px;
     }
-    .flag + .smurf-icon {
+    :global(.country-flag) + .smurf-icon {
         margin-left: -3px;
     }
 
