@@ -243,6 +243,12 @@
             onclose: (event) => {
                 show_error = true;
                 console.log("Closed!", event);
+                const {code, reason} = event;
+
+                if ([1000, 1001, 1005].includes(code)) {
+                    console.log("MANUAL RECONNECT!");
+                    settings.socket.reconnect(event);
+                }
             },
             onerror: (event) => {
                 show_error = true;
