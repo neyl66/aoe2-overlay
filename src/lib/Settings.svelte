@@ -35,6 +35,9 @@
     }
 
     onMount(() => {
+        // Allow overflow.
+        document.body.classList.add("-overflow");
+
         // Restore saved settings.
         const saved_url_settings = localStorage.getItem("url_settings");
         if (saved_url_settings) {
@@ -47,10 +50,13 @@
             selected_player = JSON.parse(saved_player);
         }
 
-        // Save data.
         return () => {
+            // Save data.
             localStorage.setItem("url_settings", JSON.stringify(url_settings));
             localStorage.setItem("selected_player", JSON.stringify(selected_player));
+
+            // Disallow overflow.
+            document.body.classList.remove("-overflow");
         }
     });
 
