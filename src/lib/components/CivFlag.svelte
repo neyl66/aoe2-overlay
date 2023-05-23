@@ -6,8 +6,8 @@
     // RoR civs adjust.
     if (is_ror) {
         switch (civ?.toLowerCase()) {
-            case persians:
-            case romans:
+            case "persians":
+            case "romans":
                 civ += "-ror";
                 break;
         }
