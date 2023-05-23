@@ -2,6 +2,7 @@
     import {onMount} from "svelte";
     import Icon from "./components/Icon.svelte";
     import CountryFlag from "./components/CountryFlag.svelte";
+    import CivFlag from "./components/CivFlag.svelte";
     import {fit} from "@leveluptuts/svelte-fit";
 
     import Sockette from "sockette";
