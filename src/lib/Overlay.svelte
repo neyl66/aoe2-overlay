@@ -532,12 +532,15 @@
                         <div class="player-civ-name-container">
                             <!-- Civ image. -->
                             {#if (settings?.civs || player?.civilization)}
-                                {@const civ_image_url = `/images/civs/${settings?.civs ? settings.civs[player.civ].toLowerCase() : player.civilization.toLowerCase()}.png`}
-                                {@const civ_flag_size = (!is_team_game) ? 30 : 25}
+                                {@const civ_name = settings?.civs ? settings.civs[player.civ] : player.civilization}
 
                                 <div class="player-civ">
-                                    <img src={civ_image_url} class="civ-flag" width={civ_flag_size} height={civ_flag_size} alt="">
-                                    <span class="player-civ-name">{settings?.civs ? settings.civs[player.civ] : player.civilization}</span>
+                                    <CivFlag
+                                        civ={civ_name}
+                                        size={(!is_team_game) ? 30 : 25}
+                                        is_ror={current_match?.ror}
+                                    />
+                                    <span class="player-civ-name">{civ_name}</span>
 
                                     {#if (!settings.show_player_colors_before_name && is_team_game && player?.color_id >= 0)}
                                         <div class="player-color" style:background-color={[settings.player_colors[player.color_id]]}>
@@ -799,10 +802,6 @@
         --width: 20px;
         margin-right: 7px;
         margin-left: -3px;
-    }
-
-    .civ-flag {
-        margin-right: 4px;
     }
 
     .player-name-inner {
