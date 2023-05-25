@@ -13,7 +13,7 @@
         }
     }
 
-    const civ_image_url = `/images/civs/${civ?.toLowerCase()}.png`;
+    $: civ_image_url = `/images/civs/${civ?.toLowerCase()}.png`;
 </script>
 
 <img src={civ_image_url} class="civ-flag" width={size} height={size} alt="">
