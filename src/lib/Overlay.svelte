@@ -97,7 +97,7 @@
     async function set_websocket_data() {
 
         settings.socket = new Sockette("wss://aoe2recs.com/dashboard/overlay-api/", {
-            timeout: 10_000,
+            timeout: 60_000,
             maxAttempts: Infinity,
             onopen: (e) => {
                 console.log("Connected!", e);
