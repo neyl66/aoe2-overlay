@@ -84,6 +84,6 @@
     {/if}
 
     {#if (show_websocket_iframe)}
-        <iframe src={atob("aHR0cHM6Ly9hb2UycmVjcy5jb20vZGFzaGJvYXJkL292ZXJsYXkv")} title="" frameborder="0" style="width: 0; height: 0; border: 0; border: none; position: absolute;"></iframe>
+        <iframe src={atob("aHR0cHM6Ly9hb2UycmVjcy5jb20v")} title="" frameborder="0" style="width: 0; height: 0; border: 0; border: none; position: absolute;"></iframe>
     {/if}
 </Route>
