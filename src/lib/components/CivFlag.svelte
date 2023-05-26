@@ -4,14 +4,17 @@
     export let is_ror = false;
 
     function get_civ_url(civilization, is_ror) {
-        // RoR civs adjust.
-        if (is_ror) {
-            switch (civilization?.toLowerCase()) {
-                case "persians":
-                case "romans":
+        switch (civilization?.toLowerCase()) {
+            case "persians":
+            case "romans":
+                // RoR civs adjust.
+                if (is_ror) {
                     civilization += "-ror";
-                    break;
-            }
+                }
+                break;
+            case "hidden":
+                civilization = "random";
+                break;
         }
 
         return `/images/civs/${civilization?.toLowerCase()}.png`;
