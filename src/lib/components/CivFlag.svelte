@@ -3,17 +3,21 @@
     export let size = 30;
     export let is_ror = false;
 
-    // RoR civs adjust.
-    if (is_ror) {
-        switch (civ?.toLowerCase()) {
-            case "persians":
-            case "romans":
-                civ += "-ror";
-                break;
+    function get_civ_url(civilization, is_ror) {
+        // RoR civs adjust.
+        if (is_ror) {
+            switch (civilization?.toLowerCase()) {
+                case "persians":
+                case "romans":
+                    civilization += "-ror";
+                    break;
+            }
         }
+
+        return `/images/civs/${civilization?.toLowerCase()}.png`;
     }
 
-    $: civ_image_url = `/images/civs/${civ?.toLowerCase()}.png`;
+    $: civ_image_url = get_civ_url(civ, is_ror);
 </script>
 
 <img src={civ_image_url} class="civ-flag" width={size} height={size} alt="">
