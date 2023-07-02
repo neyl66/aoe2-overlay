@@ -107,6 +107,11 @@
                 if (settings.show_1v1_rating) {
                     settings.leaderboard_id = 3;
                 }
+
+                // Send profile ID to API.
+                if (settings?.profile_id) {
+                    settings.socket.json({overlay: Number(settings.profile_id)});
+                }
             },
             onmessage: async (event) => {
                 show_error = false;
