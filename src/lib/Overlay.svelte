@@ -613,6 +613,11 @@
                                         {current_players[player.profile_id].rating}
                                     {/if}
 
+                                    <!-- Highest rating. -->
+                                    {#if (!player?.is_smurf && current_players[player.profile_id]?.highest_rating && current_players[player.profile_id]?.highest_rating > current_players[player.profile_id].rating)}
+                                        <span class="highest-rating">[{current_players[player.profile_id].highest_rating}]</span>
+                                    {/if}
+
                                     <!-- Indicate TG MMR fallback -->
                                     {#if (current_players[player.profile_id]?.is_tg_mmr_fallback)}
                                         <span class="team-game-rating">TG</span>
@@ -836,6 +841,10 @@
     }
     .players.-team .rating {
         font-size: 0.85em;
+    }
+    .highest-rating {
+        color: #e5c623;
+        font-size: 0.95em;
     }
     .team-game-rating {
         color: #00dcf3;
