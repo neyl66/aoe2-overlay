@@ -17,9 +17,8 @@
     });
 
     import {get_winrate} from "../utils.js";
-
-    const player_url = (profile_id, leaderboard_id) => `https://legacy.aoe2companion.com/api/leaderboard?game=aoe2de&leaderboard_id=${leaderboard_id}&count=1&profile_id=${profile_id}`;
-    const match_url = (profile_id) => `https://legacy.aoe2companion.com/api/player/matches?game=aoe2de&start=0&count=1&profile_ids=${profile_id}`;
+    import {get_current_match} from "../lib/queries/matches.js";
+    import {check_players, get_current_player} from "../lib/queries/players.js";
 
 	let settings = {
 		steam_id: route.query?.steam_id,
@@ -68,29 +67,11 @@
     let current_players = {};
     let show_error = false;
 
-    async function set_static_data() {
-        const response = await fetch("https://raw.githubusercontent.com/denniske/aoe2companion/master/app/assets/strings/en.json.lazy");
-        const {civ, game_type, leaderboard, map_size, map_type, rating_type} = await response.json();
-
-        const prepare_data = (data) => data.reduce((data, item) => {
-            data[item.id] = item.string;
-            return data;
-        }, {});
-
-        // Set static data.
-        settings["civs"] = prepare_data(civ);
-        settings["game_type"] = prepare_data(game_type);
-        settings["leaderboard"] = prepare_data(leaderboard);
-        settings["map_size"] = prepare_data(map_size);
-        settings["map_type"] = prepare_data(map_type);
-        settings["rating_type"] = prepare_data(rating_type);
-    }
-
     async function set_data() {
         await set_current_match();
-        if (!current_match) return;
+        if (!current_match) return console.error("Current match not found!");
 
-        settings.leaderboard_id = current_match.leaderboard_id;
+        settings.leaderboard_id = current_match.leaderboardId;
         await set_current_players();
     }
 
@@ -325,101 +306,97 @@
                 ...players,
             };
         }
-
-        async function check_players(profile_ids) {
-            const response = await fetch(`https://aoe2-api.neyl.dev/v0/check-players?profile_ids=${profile_ids.join(",")}`).catch((error) => {
-                console.error("Check players fetch error:", error);
-            });
-
-            if (!response?.ok) {
-                console.error(`Check players response not ok! Status: ${response?.status}`);
-                return {};
-            }
-
-            const json = await response.json();
-            return json;
-        }
     }
 
     async function set_current_match() {
-        [current_match] = await get_current_match();
-        if (!current_match) return;
+        current_match = await get_current_match(settings.profile_id);
+        if (!current_match) return console.error("Did not find current match!");
 
         // Make watched player always first.
-        current_match.players.sort((a, b) => {
-            if (a.profile_id == settings.profile_id) {
-                return -1;
-            } else {
-                return 1;
-            }
-        });
+        for (const team of current_match.teams) {
+            team.players.sort((a, b) => {
+                if (a.profileId == settings.profile_id) {
+                    return -1;
+                } else {
+                    return 1;
+                }
+            });
+        }
 
-        const watched_player_team = current_match.players.find((player) => player.profile_id == settings.profile_id)?.team;
+        // Get watched player team.
+        let watched_player_team;
+        for (const team of current_match.teams) {
+            let found = false;
+            for (const player of team.players) {
+                if (player.profileId == settings.profile_id) {
+                    watched_player_team = player.team;
+                    found = true;
+                    break;
+                }
+            }
+
+            if (found) break;
+        }
+
         if (!watched_player_team) return console.error("Did not find watched player team!");
 
+        const players = [];
+
         // Make watched player team always first.
-        for (const player of current_match.players) {
-            if (player.team === watched_player_team) {
-                player.team = 0;
+        for (const team of current_match.teams) {
+            for (const player of team.players) {
+                if (player.team === watched_player_team) {
+                    player.team = 0;
+                    team.teamId = 0;
+                }
+
+                player.profile_id = player.profileId;
+                players.push(player);
             }
         }
 
-        current_match.players.sort((a, b) => {
-            return a.team - b.team;
-        });
-    }
+        current_match.players = players;
 
-    async function get_current_match() {
-        try {
-            const response = await fetch(match_url(settings.profile_id));
-            if (!response.ok) return [];
-
-            const json = await response.json();
-            return json;
-        } catch (error) {
-            console.error(error);
-        }
-
-        return [];
+        current_match.players.sort((a, b) => a.team - b.team);
     }
 
     async function set_current_players() {
 
         for (const {profile_id} of current_match.players) {
-            const {leaderboard: player} = await get_current_player(profile_id);
+            const player = await get_current_player(profile_id);
 
-            // Data check.
-            if (!Array.isArray(player) || player?.length < 1) continue;
+            // Player check.
+            if (!player) {
+                console.error("Did not get current player", profile_id);
+                continue;
+            }
+
+            const leaderboard = player.leaderboards.find(({leaderboardId}) => leaderboardId === settings.leaderboard_id);
+            if (!leaderboard) {
+                console.error("Leaderboard not found for player", profile_id);
+                continue;
+            }
 
             // Stats.
-            const wins = player[0].wins;
-			const losses = player[0].losses;
+            const wins = leaderboard.wins;
+			const losses = leaderboard.losses;
 			const number_of_games = wins + losses;
 
             // Winrate.
             const winrate = get_winrate({wins, number_of_games});
 
-            // Overwrite.
-            player[0].winrate = winrate;
-            player[0].number_of_games = number_of_games;
-            current_players[profile_id] = player[0];
+            // Set new data.
+            player.wins = wins;
+            player.losses = losses;
+            player.winrate = winrate;
+            player.games = number_of_games;
+            player.rating = leaderboard.rating;
+            player.rank = leaderboard.rank;
+            player.highest_rating = leaderboard?.maxRating;
+            current_players[profile_id] = player;
+
+            current_match.leaderboard_name = leaderboard.abbreviation;
         }
-    }
-
-    async function get_current_player(profile_id) {
-        if (!settings.leaderboard_id) return {};
-
-        try {
-            const response = await fetch(player_url(profile_id, settings.leaderboard_id));
-            if (!response.ok) return {};
-
-            const json = await response.json();
-            return json;
-        } catch (error) {
-            console.error(error);
-        }
-
-        return {};
     }
 
 	function start_periodic_check() {
@@ -442,7 +419,6 @@
         if (settings?.use_websocket) {
             set_websocket_data();
         } else {
-            set_static_data();
             set_data();
 		    start_periodic_check();
         }
@@ -476,11 +452,13 @@
     {/if}
 
     {#if (current_match && Object.keys(current_match).length > 0)}
+        {@const lobby_name = (current_match?.name && current_match.name !== "AUTOMATCH") ? current_match.name : current_match?.lobby_name}
+        {@const map_name = current_match?.mapName && !current_match.mapName.includes("unknown") ? current_match.mapName : (!current_match?.mapName) ? current_match?.map : ""}
 
         <div class="match-info">
             <!-- Lobby name. -->
-            {#if (current_match?.lobby_name)}
-                <strong>{current_match.lobby_name}</strong>
+            {#if (lobby_name)}
+                <strong>{lobby_name}</strong>
                 <br>
             {/if}
 
@@ -492,17 +470,14 @@
             {/if}
 
             <!-- Map type. -->
-            {#if (settings?.map_type)}
-                {settings.map_type[current_match.map_type]}
-                |
-            {:else if (current_match?.map)}
-                {current_match.map}
+            {#if (map_name)}
+                {map_name}
                 |
             {/if}
 
             <!-- Game type. -->
-            {#if (settings?.leaderboard)}
-                {settings.leaderboard[current_match.leaderboard_id]}
+            {#if (current_match?.leaderboard_name)}
+                {current_match.leaderboard_name}
             {:else}
                 {#if (current_match?.game_type)}
                     {current_match.game_type}
@@ -537,8 +512,8 @@
                     <div class={`player ${is_another_team ? "-border" : ""}`}>
                         <div class="player-civ-name-container">
                             <!-- Civ image. -->
-                            {#if (settings?.civs || player?.civilization)}
-                                {@const civ_name = settings?.civs ? settings.civs[player.civ] : player.civilization}
+                            {#if (player?.civName || player?.civilization)}
+                                {@const civ_name = player?.civName || player?.civilization}
 
                                 <div class="player-civ">
                                     <CivFlag
@@ -614,7 +589,7 @@
                                     {/if}
 
                                     <!-- Highest rating. -->
-                                    {#if (!player?.is_smurf && current_players[player.profile_id]?.highest_rating && current_players[player.profile_id]?.highest_rating > current_players[player.profile_id].rating)}
+                                    {#if (!player?.is_smurf && current_players[player.profile_id]?.highest_rating && (current_players[player.profile_id]?.highest_rating > current_players[player.profile_id].rating))}
                                         <span class="highest-rating">[{current_players[player.profile_id].highest_rating}]</span>
                                     {/if}
 
