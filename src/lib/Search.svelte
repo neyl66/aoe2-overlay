@@ -44,6 +44,10 @@
         <div class="player-dropdown" slot="item" let:item={player} let:label={label}>
             <CountryFlag country={player.country} circle={false} ratio={"4x3"} height={15} />
             <span>{@html label}</span>
+
+            {#if player?.games}
+                ({player.games} games)
+            {/if}
         </div>
     </AutoComplete>
 </div>
