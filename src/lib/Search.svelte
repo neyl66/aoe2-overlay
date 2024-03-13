@@ -12,9 +12,9 @@
 
         if (search_cache[search_value]) return search_cache[search_value];
 
-        const search_url = (search) => `https://legacy.aoe2companion.com/api/profile?game=aoe2de&start=1&count=10&search=${encodeURIComponent(search)}`;
+        const search_url = `https://data.aoe2companion.com/api/profiles?search=${encodeURIComponent(search_value)}`;
 
-        const response = await fetch(search_url(search_value)).catch((error) => console.error("Search players fetch error!", error));
+        const response = await fetch(search_url).catch((error) => console.error("Search players fetch error!", error));
 
         if (!response?.ok) {
             console.error(`Search players fetch not ok! Status: ${response?.status}`);
@@ -25,7 +25,13 @@
 
         const {profiles} = json;
 
-        search_cache[search_value] = profiles;
+        search_cache[search_value] = profiles.map((profile) => {
+            // Map keys to the old way.
+            profile.profile_id = profile.profileId;
+            profile.steam_id = profile.steamId;
+
+            return profile;
+        });
 
         return profiles;
     }
